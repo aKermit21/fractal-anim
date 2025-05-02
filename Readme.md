@@ -13,7 +13,7 @@ Think of this as a simplified light reflection simulation.
 
 Since both the light source (which can move and change color) and the fractal leaf (which transforms and rotates its elements) are in motion, the result is a mesmerizing flow of shimmering highlights across the structure.  
 
-![light ays on elements](doc/fractal_perp.png.png "Perpendicular Rays")
+![light ays on elements](doc/fractal_perp.png "Perpendicular Rays")
 
 ### Possible effects
 ![fractal leaf example](doc/fractal_ex2.png "Fractal Leaf example")
