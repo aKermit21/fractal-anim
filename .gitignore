@@ -1,0 +1,16 @@
+# Ignore all these files in any subdirectory
+**.exe
+**.out
+**.log
+**.o
+**.bkp
+**/run.bat
+**/cmp.bat
+# contents of this subdirectory - seems clangd runtime
+.idea/
+# build directories
+**/build
+**/build-*
+# other directories
+**/log
+**/.cache

@@ -1,0 +1,39 @@
+Key Functions
+
+   Key   Class     Function
+
+  <F1>    Help     Print Key Functions on screen
+     X   main()    EXit
+
+<Space>  LogKey    1x - Freeze time, Stop Animation; 2x - resume flash time
+     R             Reset - go to base configuration
+
+<PageUp> TranAlg   Speed Up, less details
+<PageDown>         Speed Down, more details
+
+     L    LightS   Light on/off toggle
+     W             Light color rotation
+     S             rotation reversed
+     A             left smooth movement
+     D             right smooth movement
+     Q             left jump movement
+     E             right jump movement
+     G             Switch mode of Grid rays visualisation: off, on, on move.
+	
+     K   ColorPal  Rotate CoLor Palette pre-Kalculated
+     I             Generate new random color Palette
+     J             Dimm all colors (dJimm) by 20%
+     U             Up all colors by 20% (reverse to previous)
+     H             Global flash of active (High) color
+
+     ~   MovWind   Animation: Wind (wobbling)
+	
+     O   MovAnim   Animation: Opening
+     C             Animation: Closing
+
+     P             Rotate Pre-calculated configurations/size
+                   
+     V   (resize)  First Branch enlarging - more dense fractal!
+     B             First Branch making smaller
+     N             Last Branch eNlarging
+     M             Last Branch making sMaller
