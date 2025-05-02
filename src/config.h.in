@@ -1,0 +1,5 @@
+// In case of NOT using meson build
+// fill this manually in config.h file
+
+#define PROJECT_STR "@my_project@"
+#define VERSION_STR "@proj_version@"

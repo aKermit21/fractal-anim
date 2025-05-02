@@ -1,0 +1,5 @@
+-xc++
+-Isrc
+-Ibuild-mes-dev
+-std=c++17
+-Wall
