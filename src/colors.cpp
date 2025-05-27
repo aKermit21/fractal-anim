@@ -139,23 +139,18 @@ void ColorPal::generate_rnd_color_pallet() {
 // provide data with current random pallete to be logged
 std::string ColorPal::log_rnd_color_pallet(){
   std::stringstream ss;
-  ss << "Color Palette Log - ";
-  switch (nr_rnd_palet) {
-  case palJustRnd:
-    ss << "  PalJustRnd :\n";
-    break;
-  case palSpcRnd1:
-    ss << "  PalSpecialRnd1 :\n";
-    break;
-  default:
-    Dbg::report_error("Unexpected Random Color Palette log attempt: ", nr_rnd_palet);
-    break;
-  }
+  ss << "  [config.colors]\n";
+  ss << "  # Colors of consecutive levels, begin to end stem\n\n";
 
-  // print RGB colors in Uint32 (composite) format
+  // print RGB color component of begin and end of stem 
   for (auto it { s_col_palet.begin() }; it != s_col_palet.end(); ++it ) {
-    ss << " { sf::Color( " << it->begin_c.toInteger() << 
-      "), sf::Color( "  << it->end_c.toInteger() << ")},\n";
+    ss << "    [[config.colors.level]]\n";
+    // ss << "      begin = " << it->begin_c.toInteger() << '\n';
+    ss << "      begin = {red = " << int(it->begin_c.r);
+    ss << ", green = " << int(it->begin_c.g) << ", blue = " << int(it->begin_c.b) << "}\n";
+    // ss << "        end = "  << it->end_c.toInteger() << '\n';
+    ss << "        end = {red = " << int(it->end_c.r);
+    ss << ", green = " << int(it->end_c.g) << ", blue = " << int(it->end_c.b) << "}\n";
   }
 
   return ss.str();

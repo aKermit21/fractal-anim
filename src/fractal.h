@@ -17,7 +17,7 @@
 
 // Basic CONFIG Constants
 namespace cFrac {
-  inline const std::string ProgramName { "Interactive Fractal Leaf Animation" };
+  inline const std::string ProgramName { cFullProgramName }; // from config.h
   inline const std::string DemoProgramName { "DEMO -- " +ProgramName+ " -- DEMO" };
   inline const std::string Version { VERSION_STR }; // from config.h
   

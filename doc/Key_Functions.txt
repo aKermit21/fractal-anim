@@ -5,8 +5,11 @@ Key Functions
   <F1>    Help     Print Key Functions on screen
      X   main()    EXit
 
-<Space>  LogKey    1x - Freeze time, Stop Animation; 2x - resume flash time
+<Space>  LogKey    1x - Freeze time, Stop Animation (also log snaphot in dev mode);
+                   2x - resume flash time
      R             Reset - go to base configuration
+  <F2>   CfgToml   Save snapshot - append in toml file
+  <F3>   CfgToml   Restore snapshot - and following be next <F3> press
 
 <PageUp> TranAlg   Speed Up, less details
 <PageDown>         Speed Down, more details

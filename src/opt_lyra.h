@@ -17,13 +17,12 @@
 
 struct OptParams {
   enum {ok = 10, help, error};
-  static inline std::string cDefaultSnapshot { PROJECT_STR "-snapshots.txt"};
   
   // Default parameters (if not defined given by CLI)
   bool optDemo {false};
   int optSpeed {10}; // default speed
   bool optAutoScaleOff {false};
-  std::string optSnapshot {cDefaultSnapshot}; 
+  std::string optSnapshot {cPath::cDefaultSnapshot}; 
   
   int parseResult {};
 };

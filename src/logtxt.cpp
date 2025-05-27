@@ -8,6 +8,8 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "logtxt.h"
+#include "cfg_toml.h"
+#include "config.h"
 #include "dbg_report.h"
 #include "fractal.h"
 #include "text_draw.h"
@@ -31,6 +33,19 @@ void LogText::startSpeedDraw(void) {
   speed_scale_draw_cnt = cPrintSpeedFrames; 
 }
 
+// Request for drawing Snapshot info
+void LogText::startSnapshotDraw(void) {
+  m_snapshot_info_active = true; 
+}
+
+void LogText::stopSnapshotDraw(void) {
+  m_snapshot_info_active = false; 
+}
+
+// Request for drawing 'Saved' per # of frames
+void LogText::startSavedDraw(void) {
+  m_saved_draw_cnt = cSavedDrawFrames; 
+}
 
 // Draw Help if requested (counter per frame)
 void LogText::help_draw(sf::RenderWindow & win) {
@@ -48,6 +63,22 @@ void LogText::speed_draw(sf::RenderWindow & win, int speed) {
   }
 }
 
+// 'Saved' confirmation after F2
+void LogText::saved_draw(sf::RenderWindow & win) {
+  if (m_saved_draw_cnt > 0) {
+    textDraw.saved_draw(win);
+    --m_saved_draw_cnt;
+    m_snapshot_info_active = false;
+  }
+}
+
+// Draw loaded (by F3) snapshot (config) info
+void LogText::snapshot_draw(sf::RenderWindow & win) {
+  if (m_snapshot_info_active and !loaded_snapshot_info_str.empty()) {
+    textDraw.snapshot_draw(win, loaded_snapshot_info_str);
+  }
+}
+
 // Welcome 
 void LogText::welcome_draw(sf::RenderWindow & win, int speed) const {
   textDraw.welcome_draw(win, speed);
@@ -57,43 +88,77 @@ void LogText::rescale_draw(sf::RenderWindow & win, float scale) const {
   textDraw.rescale_draw(win, scale);
 } 
 
-void LogText::log_snapshot(std::string sData) {
-  // Assuming command run from build* subdirectory
-  const std::string subdir_str { "../log/" };
+// Establish log file path
+std::string LogText::search_file_path(void) {
+  static std::string dirpath_str;
+  static std::string filepath_str {};
+  
+  if (log_subdir_state != sDNotChecked) {
+    assert( !filepath_str.empty() );
+    return filepath_str;
+    }
+  
+  const size_t cSubdirsNum { cPath::cLogSubdirs.size() };
+  assert( cSubdirsNum > 0);
+  size_t dir_index = 0;
 
-  const std::filesystem::directory_entry log_path{subdir_str};
-
-  static std::string filepath;
-
-  // Check if subdirectory exists
-  if (sDNotChecked == log_subdir_state) {
-    // Check for subdirectory
+  do {
+    dirpath_str = cPath::cLogSubdirs[dir_index];
+    (void)TextDraw::replace_home_alias(dirpath_str);
+    std::filesystem::directory_entry log_path{dirpath_str};
+    // Check if subdirectory exists
     if (log_path.exists()) {
       log_subdir_state = sDExists;
-      filepath = subdir_str + snapshot_file_str;
+      filepath_str = dirpath_str + snapshot_file_str;
+      Dbg::report_info("Snapshot file location found/set to: " + filepath_str);
     } else {
       log_subdir_state = sDNotExists;
-      filepath = snapshot_file_str;
+      Dbg::report_info("Possible Log (sub)directory Not found: " + dirpath_str);
+      // if (sub)directory not found, use current directory
+      filepath_str = snapshot_file_str;
     }
-  }
+    dir_index++;
+  } while ((sDNotExists == log_subdir_state) and (dir_index < cSubdirsNum));
+  
+  assert(log_subdir_state != sDNotChecked);
+  assert(dir_index <= cSubdirsNum);
 
+  return filepath_str;
+}
+
+
+void LogText::log_snapshot(std::string sData) {
+
+  std::string filepath_str { search_file_path() };
+  
+  Dbg::report_info("Snapshot to file: " + filepath_str);
+  
   // generate time stamp
   std::time_t time = std::time({});
   char timeString[100]; // maximum expected date/time string size
   std::strftime(std::data(timeString), std::size(timeString),
                 "%A %e-%b-%y  %T", std::localtime(&time));
   
+  // File shall be immediately closed after any operation
+  assert(!file_opened);
+  
   // Append log file
-  if (!file_opened) {
-    fout.open(filepath, std::ios_base::app);
-  }
+  fout.open(filepath_str, std::ios_base::app);
+
   if (fout.is_open()) {
     file_opened = true;
-    // print log title then time stamp
-    fout << "Snapshot taken - " << timeString << '\n';
+    
+    // print log head in toml
+    fout << "#-------------------------------------------------------------" << "\n\n";
+    fout << "[[config]]" << "\n\n"// << std::setw(0)
+      << "  description = \"\"" << " # <- add some text to be displayed" << '\n'
+      << "  time-date = \"" << timeString << "\"\n" << std::endl;
+
+    // TODO: Add primary element
 
     // Takes snpashot data from base classes
     fout << sData;
+    fout << std::endl;
 
     log_close();
   } else {
@@ -101,6 +166,16 @@ void LogText::log_snapshot(std::string sData) {
   }
 };
 
+
+void LogText::load_next_snapshot(T_Algo_Arr & transform_algo, T_Col_Palet & colors) {
+  // File shall be immediately closed after any operation
+  assert(!file_opened);
+
+  loaded_snapshot_info_str =
+    cfgToml.loadNextConfig(search_file_path(), transform_algo, colors);
+}
+
+  
 void LogText::log_close() noexcept {
   if (file_opened) {
     fout << std::endl; // flash data

@@ -84,6 +84,12 @@ void MainProgAggr::draw_artefacts(sf::RenderWindow & win, AutoScale & rescale) {
   // Draw Speed if requested
   auto speed = movWind.get_speedScale();
   logtxt.speed_draw(win, speed);
+  
+  // Draw Snapshot saved confirmation
+  logtxt.saved_draw(win);
+  
+  // Draw Snapshot info if requested
+  logtxt.snapshot_draw(win);
 }
 
 // General key decodation
@@ -94,11 +100,6 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key) {
     if (m_demoActive) { movWind.stopAnimation(); }
     else { movWind.stopFreezeAnimation(); }// Freeze time or permanent Stop
     movWind.stop_wind();
-    // log snapshot (transf and colors)
-#ifndef NDEBUG
-    // Remove this functionality in Release build
-    logtxt.log_snapshot( prepareSnapshotData());
-#endif
     // print current speed scale for # of frames
     logtxt.startSpeedDraw();
   }
@@ -108,6 +109,23 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key) {
   else if (key == sf::Keyboard::F1) {
     // Help text will be appearing for some time
     logtxt.startHelpDraw();
+  } 
+  else if (key == sf::Keyboard::F2) {
+    // Store fractal snapshot/configuration: transformations and colors
+    logtxt.log_snapshot( prepareSnapshotData());
+    // Display confirmation
+    logtxt.startSavedDraw();
+  } 
+  else if (key == sf::Keyboard::F3) {
+    // Retrieve fractal snapshot/configuration from file
+    logtxt.load_next_snapshot( movWind.algo_data, ColorPal::s_col_palet);
+    // Refresh also flash color pallete
+    colorPal.calc_flash_color_pallet(LightS::s_lightColor);
+    // In case of change of leaf contruction reset flash
+    colorPal.reset_flash_algo();
+    movWind.resumeTimeFlow();
+    // Allow display shaphot
+    logtxt.startSnapshotDraw();
   } 
   else if (key == sf::Keyboard::PageUp) {
     // Increase size thus speed

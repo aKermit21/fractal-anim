@@ -11,6 +11,9 @@
 # build directories
 **/build
 **/build-*
+# subproject build
+subprojects/tomlplusplus-3.4.0
 # other directories
-**/log
+log/*.txt
 **/.cache
+**/packagecache

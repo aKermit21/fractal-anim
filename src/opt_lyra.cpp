@@ -35,7 +35,6 @@ OptParams optParse(int argc, const char** argv)
             ["-s"]["--speed"]("Initial Speed vs Detail draw [0-20]")
       | lyra::opt(myArgs.optSnapshot, "file")
             ["-f"]["--file"]("Snapshot File"); 
-                             // + OptParams::cDefaultSnapshot + " -default)");
 
   // Parse the program arguments:
   auto result = cli.parse({ argc, argv });
@@ -61,7 +60,7 @@ OptParams optParse(int argc, const char** argv)
 
   Dbg::report_info("Option demo : ", myArgs.optDemo);
   Dbg::report_info("Option initial speed : ", myArgs.optSpeed);
-  Dbg::report_info("Option Snapshot file: " + myArgs.optSnapshot, 0); 
+  Dbg::report_info("Option Snapshot file: " + myArgs.optSnapshot); 
   
   return myArgs;
 }

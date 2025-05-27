@@ -10,45 +10,49 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <string_view>
+#include "colors.h"
 #include "dbg_report.h"
-#include "transform.h"
+// #include "toml++/impl/forward_declarations.hpp"
+#include "fractal.h"
+#include "toml++/toml.hpp"
 
-// Drawing Texts on top of Picture
-struct TextDraw {
-  TextDraw()
-    : font_subdir_state { sDNotChecked }
-    , m_font_loaded { false }
+
+// Parsing and loading Toml snapshot/config
+struct CfgToml {
+  CfgToml()
+    : m_fileconfigState{ cFileNotChecked }
+    , m_configMaxNumber{ 0 }
+    , m_currentConfig{ 0 }
   {
-    Dbg::report_info("Init: TextDraw ");
-    m_font_loaded = init_font();
+    Dbg::report_info("Init: CfgToml");
   }
 
-  virtual ~TextDraw() { 
-    // close font file ?
+  virtual ~CfgToml() { 
+    // close config file ?
   }
 
-  // Real draw
-  void help_draw(sf::RenderWindow & win) const; 
-  void welcome_draw(sf::RenderWindow & win, int speed) const; 
-  void speed_draw(sf::RenderWindow & win, int speed) const; 
-  void saved_draw(sf::RenderWindow & win) const; 
-  void snapshot_draw(sf::RenderWindow & win, std::string & info) const; 
-  void rescale_draw(sf::RenderWindow & win, float scale) const; 
-
-  // Helper
-  // Replace (possible) $HOME alias with explicit path
-  static bool replace_home_alias(std::string & path);
-
-  const static std::string home_alias;     // alias
-  const static std::string home_dir;       // real directory
+  // struct ConfigResult {
+  //   bool success;
+  //   std::string str;
+  // };
+  
+  std::string loadNextConfig(std::string filePath,
+                      T_Algo_Arr & transform_algo, T_Col_Palet & colors);
   
 private:
-  // font subdirectory
-  enum SubDirState {sDNotChecked, sDExists, sDNotExists};
-  SubDirState font_subdir_state;
-  bool m_font_loaded;
-  sf::Font m_font;
+  bool loadNextConfigInternal(std::string filePath, std::string & info,
+                      T_Algo_Arr & transform_algo, T_Col_Palet & colors);
 
-  bool init_font(void);
+  bool loadTomlConfig(std::string filePath);
+  
+  // config toml file state
+  enum FileConfigState {cFileNotChecked, cFileDoesNotExist,
+                      cFileConfigCorrupted, cFileConfigLoaded};
+
+  toml::table allConfig;
+  
+  FileConfigState m_fileconfigState;
+
+  int m_configMaxNumber;
+  int m_currentConfig;
 };

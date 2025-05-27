@@ -8,6 +8,7 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdlib>
+#include <optional>
 #include <string>
 #include <iostream>
 #include "dbg_report.h"
@@ -31,23 +32,36 @@ std::chrono::time_point<Dbg::Clock> Dbg::time_beg;
 Dbg::VecMinMax Dbg::minmax;
 
 
-void Dbg::report_info(std::string s, long int i) {
+void Dbg::report_info(std::string_view s, std::optional<long> i) {
   if(cReportInfo) {
-    std::cerr << "  Info: "<< s << i << '\n'; 
+    std::cerr << "  Info: "<< s;
+    if (i) {
+      std::cerr << *i;
+    }
+    std::cerr << '\n';
   }
   ++info_cnt; 
 }
 
-void Dbg::report_trace(std::string s, long int i) {
+void Dbg::report_trace(std::string_view s, std::optional<long> i) {
   if(cReportTrace) {
-    std::cerr << "  Trace: "<< s << i << '\n'; 
+    std::cerr << "  Trace: "<< s;
+    if (i) {
+      std::cerr << *i;
+    }
+    std::cerr << '\n';
+    
   }
   ++info_cnt; 
 }
 
-void Dbg::report_warning(std::string s, long int i) {
+void Dbg::report_warning(std::string_view s, std::optional<long> i) {
   if(cReportWarning) {
-    std::cerr << " Warning: "<< s << i << '\n'; 
+    std::cerr << " Warning: "<< s;
+    if (i) {
+      std::cerr << *i;
+    }
+    std::cerr << '\n';
   }
   ++warning_cnt; 
 }

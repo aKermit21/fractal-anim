@@ -108,14 +108,18 @@ void TranAlg::reset_pre_cfg(){
 
 std::string TranAlg::log_trans_config() {
   std::stringstream ss;
-  ss << "Transformation conf Log :\n ";
-  ss << "  Reposition (promile), Angles (0.1deg), Ratio\n";
+
+  // Prepare config in form of toml string
+  ss << "  [config.transform]\n";
+  ss << "    # consecutive elements/branches\n";
+  ss << "    element = [\n";
   for (size_t ind {0}; ind < cFrac::NrOfElements; ++ind) {
-    ss << "{";
-    ss << algo_data[ind].repos << ", ";  
-    ss << (algo_data[ind].angle * 10L) / cTran::accurAngleMltp << ", ";  
-    ss << algo_data[ind].scale << "},\n";
+    // inline toml table
+    ss << "      {reposition = " << algo_data[ind].repos << ", ";  
+    ss << "angle = " << (algo_data[ind].angle * 10L) / cTran::accurAngleMltp << ", ";  
+    ss << "scale = " << algo_data[ind].scale << "},\n";
   }
+  ss <<"     ]\n";
   return ss.str();
 }
 

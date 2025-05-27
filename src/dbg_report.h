@@ -13,6 +13,8 @@
 #include <string>
 #include <iostream>
 #include <chrono>
+#include <string_view>
+#include <optional>
 
 // Switch off/on Asserts manually if NOT set correctly by make/cmake
 // #define NDEBUG
@@ -47,13 +49,12 @@ struct Dbg
   // Log Errors/Warning Options
   // write (optional) info when at run time
   constexpr static bool cReportError { true };
+  constexpr static bool cReportWarning { true };
   #ifdef NDEBUG
   // Release make
-  constexpr static bool cReportWarning { false };
   constexpr static bool cReportInfo { false }; // timing, info - non recursive
   #else
   // Development
-  constexpr static bool cReportWarning { true };
   constexpr static bool cReportInfo { true }; // timing, info - non recursive
   #endif
   constexpr static bool cReportTrace { false }; // Debug, trace, possible recursive info
@@ -71,11 +72,11 @@ struct Dbg
   static void count_elements(int i);
   static void demo_frames(long int i);
   static void report_error(std::string s, long int i);
-  static void report_warning(std::string s, long int i);
+  static void report_warning(std::string_view s, std::optional<long> i = std::nullopt);
   //special multiple_warning (x2 formula)
   static void report_mltpl_warning(MultipleWarning mwtype, long int i);
-  static void report_info(std::string s, long int i);
-  static void report_trace(std::string s, long int i);
+  static void report_info(std::string_view s, std::optional<long> i = std::nullopt);
+  static void report_trace(std::string_view s, std::optional<long> i = std::nullopt);
   static void find_minmax(const VecMinMax minmaxVec);
   static void report_summary(void) noexcept;
 

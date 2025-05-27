@@ -68,22 +68,26 @@ src = [
 	'include/lyra/version.hpp'
 ]
 
-fs = import('fs')
-foreach header : src
-	# use substring to drop `include/` prefix
-	install_headers(header, subdir : fs.parent(header.substring(8)))
-endforeach
-
 inc_dir = include_directories('include')
 
 lyra_dep = declare_dependency(include_directories: inc_dir)
 
-pkg = import('pkgconfig')
-pkg.generate(
-	subdirs : 'lyra',
-	filebase : 'lyra',
-	version : meson.project_version(),
-	name : meson.project_name(),
-	description : 'A simple to use, composing, header only, command line arguments parser for C++ 11 and beyond.',
-	url: 'https://github.com/bfgroup/Lyra',
-)
+if not meson.is_subproject()
+
+	fs = import('fs')
+	foreach header : src
+		# use substring to drop `include/` prefix
+		install_headers(header, subdir : fs.parent(header.substring(8)))
+	endforeach
+
+	pkg = import('pkgconfig')
+	pkg.generate(
+		subdirs : 'lyra',
+		filebase : 'lyra',
+		version : meson.project_version(),
+		name : meson.project_name(),
+		description : 'A simple to use, composing, header only, command line arguments parser for C++ 11 and beyond.',
+		url: 'https://github.com/bfgroup/Lyra',
+	)
+
+endif
