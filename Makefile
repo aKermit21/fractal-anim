@@ -1,5 +1,5 @@
 
-APPNAME := fexe
+APPNAME := frexe
 # build (and dependency files) subdirectories
 OBJDIR := build
 # SOURCEDIR := src

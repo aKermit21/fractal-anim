@@ -24,22 +24,46 @@ Since both the light source (which can move and change color) and the fractal le
 ## Installation
 Clone GitHub project
 ### Using meson
-Ii is recommended to use Meson build system as it verifies dependencies,
+It is recommended to use Meson build system as it handles dependencies
+(including subprojects),
 enables automatic configuration and explicit installation.
 ``` shell
+cd fractal-anim/
 mkdir build-mes-release/
 meson setup build-mes-release/
 cd build-mes-release/
 meson compile
+./frexe [-h] # to run app just from build directory
+```
+#### Optional explicit installation
+of program, dependent library and snapshot file in system
+``` shell
 meson configure --prefix=$HOME/.local  # optionally for linux LOCAL installation
-meson install # optionally to explicitly install
+meson install
+```
+to install toml++ shared library in system (which will NOT be installed as subproject):
+``` shell
+cd ../subprojects/tomlplusplus-3.4.0
+mkdir build-lib/
+meson setup build-lib/
+cd build-lib/
+meson install   # install shared library
+[sudo ldconfig] # update library cache
+frexe [-h]      # run app from anywhere
 ```
 ### Using make
-It is also possible to use make with included Makefile:
-- edit config.h.in manually in src/ and change file name to config.h
+It is also possible to use make with included Makefile.
+Following additional steps will be necessary:
+- edit config.h.in manually in src/ and change file name to config.h;
+- install tomlplusplus shared library in system;
+- possible add aditional includes in Makefile;
+then:
 ``` shell
+cd fractal-anim
 mkdir build # from project root
+[make depend]  # update dependency file
 make release
+./frexe [-h]
 ```
 ## Running
 To check available options:
