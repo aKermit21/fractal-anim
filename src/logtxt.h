@@ -52,10 +52,11 @@ struct LogText {
   CfgToml cfgToml;
 
   // Log snapshot to file with timestamp and provided data
-  void log_snapshot(std::string data_str);
+  void log_snapshot(std::string data_str, const Element& prim_element);
    
   // retrieve (next) snapshot from file
-  void load_next_snapshot(T_Algo_Arr & transf_arr, T_Col_Palet & col_palet);
+  void load_next_snapshot(Element& prim_element, T_Algo_Arr & transf_arr,
+                          T_Col_Palet & col_palet);
   
   // Set enabling counter
   void startHelpDraw(void);

@@ -85,13 +85,14 @@ int main(int argc, const char** argv)
                 (event.key.code == sf::Keyboard::Escape)) {
               window.close();
             } else {
-              if (event.key.code == sf::Keyboard::R) {
+              if ((event.key.code == sf::Keyboard::R) or 
+                  (event.key.code == sf::Keyboard::F3)) {
                 // Reset
                 prim_element.initPrimary();
                 autoScale.resetAutoScale();
               } // intentionaly lack of else, reset handling continued below
               // Keys decodation dispatcher
-              fractMain.key_decodation(event.key.code);
+              fractMain.key_decodation(event.key.code, prim_element);
             }
             break;
           default: 

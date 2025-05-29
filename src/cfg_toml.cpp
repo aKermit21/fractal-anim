@@ -28,10 +28,10 @@
 
 
 // Inteface - common error handling, return string to display info
-std::string CfgToml::loadNextConfig(std::string filePath,
+std::string CfgToml::loadNextConfig(std::string filePath, Element & prim_element,
                              T_Algo_Arr & transform_algo, T_Col_Palet & colors) {
   std::string info {};
-  auto success = loadNextConfigInternal(filePath, info, transform_algo, colors);
+  auto success = loadNextConfigInternal(filePath, info, prim_element, transform_algo, colors);
   if (!success) {
     if (m_fileconfigState != cFileDoesNotExist) {
       Dbg::report_warning("Error parsing config file " + filePath +
@@ -46,7 +46,8 @@ std::string CfgToml::loadNextConfig(std::string filePath,
 
 // next config from loaded file
 bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
-                             T_Algo_Arr & tranform_algo, T_Col_Palet & colors) {
+                                     Element & prim_element,  T_Algo_Arr & tranform_algo,
+                                     T_Col_Palet & colors) {
 
  
   if (m_fileconfigState != cFileConfigLoaded) {
@@ -74,13 +75,14 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   ss << thisConfig << '\n';
   Dbg::report_trace(ss.str());
 
-  T_Algo_Arr tmp_tran_algo;
-  T_Col_Palet tmp_colors;
+  T_Algo_Arr tmp_tran_algo {};
+  T_Col_Palet tmp_colors {};
+  Element tmp_prim {};
   
   // std::cout << thisConfig.at_path("colors.level[0]").type() << '\n';
   // std::cout << thisConfig.at_path("colors.level[0].begin").type() << '\n';
-  // std::cout << thisConfig["colors"]["level"][0]["begin"]["red"].type() << '\n';
-  // std::cout << thisConfig["colors"]["level"][0]["begin"]["red"].is_integer() << '\n';
+  std::cout << thisConfig["primary"]["width"].type() << '\n';
+  std::cout << thisConfig["primary"]["width"].is_integer() << '\n';
 
   // Retrieving transform part
   // 
@@ -164,6 +166,41 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
 
   // Copy this to live color palete
   colors = tmp_colors;
+
+  // Retrieving primary element
+  // 
+  if (!thisConfig["primary"]["x"].is_integer()) return false;
+  std::optional<int> tmpint = thisConfig["primary"]["x"].value<int>();
+  if (!tmpint) return false;
+  tmp_prim.stem_xy.vec_xy.x = *tmpint * cTran::AccurMltp;
+  
+  if (!thisConfig["primary"]["y"].is_integer()) return false;
+  tmpint = thisConfig["primary"]["y"].value<int>();
+  if (!tmpint) return false;
+  tmp_prim.stem_xy.vec_xy.y = *tmpint * cTran::AccurMltp;
+  
+  if (!thisConfig["primary"]["dx"].is_integer()) return false;
+  tmpint = thisConfig["primary"]["dx"].value<int>();
+  if (!tmpint) return false;
+  tmp_prim.stem_xy.vec_xy.dx = *tmpint * cTran::AccurMltp;
+  
+  if (!thisConfig["primary"]["dy"].is_integer()) return false;
+  tmpint = thisConfig["primary"]["dy"].value<int>();
+  if (!tmpint) return false;
+  tmp_prim.stem_xy.vec_xy.dy = *tmpint * cTran::AccurMltp;
+  
+  if (!thisConfig["primary"]["width"].is_integer()) return false;
+  auto tmpwidth = thisConfig["primary"]["width"].value<int>();
+  if (!tmpwidth) return false;
+  // TODO: Make more general width -> x1,x2,y1,y2 calculation
+  // also for non-horizontal stem
+  tmp_prim.stem_xy.y1 = tmp_prim.stem_xy.vec_xy.y - (*tmpwidth * cTran::AccurMltp / 2);
+  tmp_prim.stem_xy.y2 = tmp_prim.stem_xy.vec_xy.y + (*tmpwidth * cTran::AccurMltp / 2);
+  tmp_prim.stem_xy.x1 = tmp_prim.stem_xy.vec_xy.x;
+  tmp_prim.stem_xy.x2 = tmp_prim.stem_xy.vec_xy.x;
+  
+  // Copy this to live Element
+  prim_element.stem_xy = tmp_prim.stem_xy;
 
   // Prepare info text
   bool description_success = false;

@@ -7,10 +7,19 @@
 #------------------------------------------------------------------------
 
 
+#-------------------------------------------------------------
+
 [[config]]
 
   description = "Deafult - Dark Green" 
   time-date = "Thursday 22-May-25  15:51:42"
+
+  [config.primary]  # Primary element location/size
+    x = 30
+    y = 530
+    dx = 1000
+    dy = -80
+    width = 20
 
   [config.colors]
   # Colors of consecutive levels, begin to end stem
@@ -50,12 +59,178 @@
       {reposition = 912, angle = 500, scale = 0.15},
      ]
 
+
+#-------------------------------------------------------------
+
+[[config]]
+
+  description = "Wool 2" # <- add some text to be displayed
+  time-date = "Thursday 29-May-25  11:55:10"
+
+  [config.primary]  # Primary element location/size
+    x = 79
+    y = 521
+    dx = 872
+    dy = -69
+    width = 17
+
+  [config.colors]
+  # Colors of consecutive levels, begin to end stem
+
+    [[config.colors.level]]
+      begin = {red = 17, green = 190, blue = 19}
+        end = {red = 29, green = 241, blue = 234}
+    [[config.colors.level]]
+      begin = {red = 4, green = 238, blue = 18}
+        end = {red = 8, green = 14, blue = 167}
+    [[config.colors.level]]
+      begin = {red = 246, green = 207, blue = 51}
+        end = {red = 164, green = 57, blue = 250}
+    [[config.colors.level]]
+      begin = {red = 205, green = 44, blue = 249}
+        end = {red = 243, green = 40, blue = 55}
+    [[config.colors.level]]
+      begin = {red = 24, green = 81, blue = 65}
+        end = {red = 210, green = 4, blue = 161}
+    [[config.colors.level]]
+      begin = {red = 26, green = 75, blue = 63}
+        end = {red = 64, green = 46, blue = 156}
+    [[config.colors.level]]
+      begin = {red = 239, green = 91, blue = 18}
+        end = {red = 190, green = 66, blue = 240}
+    [[config.colors.level]]
+      begin = {red = 217, green = 247, blue = 52}
+        end = {red = 180, green = 221, blue = 173}
+
+  [config.transform]
+    # consecutive elements/branches
+    element = [
+      {reposition = 237, angle = 255, scale = 0.532},
+      {reposition = 475, angle = 233, scale = 0.4365},
+      {reposition = 670, angle = 211, scale = 0.341},
+      {reposition = 823, angle = 190, scale = 0.2455},
+      {reposition = 932, angle = 168, scale = 0.15},
+     ]
+
+#-------------------------------------------------------------
+
+[[config]]
+
+  description = "Cotton Wool" # <- add some text to be displayed
+  time-date = "Wednesday 28-May-25  15:45:52"
+
+  [config.primary]  # Primary element location/size
+    x = 79
+    y = 521
+    dx = 872
+    dy = -69
+    width = 17
+
+  [config.colors]
+  # Colors of consecutive levels, begin to end stem
+
+    [[config.colors.level]]
+      begin = {red = 204, green = 0, blue = 0}
+        end = {red = 160, green = 160, blue = 0}
+    [[config.colors.level]]
+      begin = {red = 160, green = 160, blue = 0}
+        end = {red = 0, green = 204, blue = 0}
+    [[config.colors.level]]
+      begin = {red = 0, green = 204, blue = 0}
+        end = {red = 0, green = 0, blue = 204}
+    [[config.colors.level]]
+      begin = {red = 0, green = 0, blue = 204}
+        end = {red = 120, green = 0, blue = 160}
+    [[config.colors.level]]
+      begin = {red = 204, green = 0, blue = 0}
+        end = {red = 160, green = 160, blue = 0}
+    [[config.colors.level]]
+      begin = {red = 160, green = 160, blue = 0}
+        end = {red = 0, green = 204, blue = 0}
+    [[config.colors.level]]
+      begin = {red = 0, green = 0, blue = 204}
+        end = {red = 120, green = 0, blue = 160}
+    [[config.colors.level]]
+      begin = {red = 204, green = 0, blue = 0}
+        end = {red = 160, green = 160, blue = 0}
+
+  [config.transform]
+    # consecutive elements/branches
+    element = [
+      {reposition = 237, angle = 440, scale = 0.532},
+      {reposition = 475, angle = 403, scale = 0.4365},
+      {reposition = 670, angle = 366, scale = 0.341},
+      {reposition = 823, angle = 329, scale = 0.2455},
+      {reposition = 932, angle = 292, scale = 0.15},
+     ]
+
+
+
+#-------------------------------------------------------------
+
+[[config]]
+
+  description = "Rainbow" 
+  time-date = "Sunday 25-May-25  16:58:31"
+
+  [config.primary]  # Primary element location/size
+    x = 30
+    y = 530
+    dx = 1000
+    dy = -80
+    width = 20
+
+  [config.colors]
+  # Colors of consecutive levels, begin to end stem
+
+    [[config.colors.level]]
+      begin = {red = 163, green = 0, blue = 0}     # Red
+        end = {red = 128, green = 128, blue = 0}   # yellow
+    [[config.colors.level]]
+      begin = {red = 128, green = 128, blue = 0}   # yellow
+        end = {red = 0, green = 163, blue = 0}     # green
+    [[config.colors.level]]
+      begin = {red = 0, green = 163, blue = 0}     # green
+        end = {red = 0, green = 0, blue = 163}     # Blue
+    [[config.colors.level]]
+      begin = {red = 0, green = 0, blue = 163}     # Blue
+        end = {red = 150, green = 0, blue = 128}   # Magenta
+    [[config.colors.level]]
+      begin = {red = 163, green = 0, blue = 0}     # Red
+        end = {red = 128, green = 128, blue = 0}   # yellow
+    [[config.colors.level]]
+      begin = {red = 128, green = 128, blue = 0}   # yellow
+        end = {red = 0, green = 163, blue = 0}     # green
+    [[config.colors.level]]
+      begin = {red = 0, green = 0, blue = 163}     # Blue
+        end = {red = 150, green = 0, blue = 128}   # Magenta
+    [[config.colors.level]]
+      begin = {red = 163, green = 0, blue = 0}     # Red
+        end = {red = 128, green = 128, blue = 0}   # yellow
+
+  [config.transform]
+    # consecutive elements/branches
+    element = [
+      {reposition = 222, angle = 750, scale = 0.38},
+      {reposition = 445, angle = 686, scale = 0.3225},
+      {reposition = 634, angle = 625, scale = 0.265},
+      {reposition = 790, angle = 561, scale = 0.2075},
+      {reposition = 912, angle = 500, scale = 0.15},
+     ]
+
 #-------------------------------------------------------------
 
 [[config]]
 
   description = "Red Tip Gray" 
   time-date = "Sunday 25-May-25  16:58:31"
+
+  [config.primary]  # Primary element location/size
+    x = 30
+    y = 530
+    dx = 1000
+    dy = -80
+    width = 20
 
   [config.colors]
   # Colors of consecutive levels, begin to end stem
@@ -101,6 +276,13 @@
 
   description = "Regular Gray" 
   time-date = "Sunday 25-May-25  16:58:31"
+
+  [config.primary]  # Primary element location/size
+    x = 30
+    y = 530
+    dx = 1000
+    dy = -80
+    width = 20
 
   [config.colors]
   # Colors of consecutive levels, begin to end stem
@@ -148,6 +330,13 @@
   description = "Sharp colors - orange" 
   time-date = "Tuesday 27-May-25  13:03:00"
 
+  [config.primary]  # Primary element location/size
+    x = 30
+    y = 530
+    dx = 1000
+    dy = -80
+    width = 20
+
   [config.colors]
   # Colors of consecutive levels, begin to end stem
 
@@ -185,4 +374,5 @@
       {reposition = 790, angle = 561, scale = 0.2075},
       {reposition = 912, angle = 500, scale = 0.15},
      ]
+
 

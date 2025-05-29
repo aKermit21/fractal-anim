@@ -12,6 +12,7 @@
 #include "autoscale.h"
 #include "colors.h"
 #include "dbg_report.h"
+#include "fractal.h"
 #include "light.h"
 #include "logtxt.h"
 #include "opt_lyra.h"
@@ -36,7 +37,7 @@ struct MainProgAggr {
 
   // General key decodation
   // can be dispatched to subordinate classes/structs
-  void key_decodation(const sf::Keyboard::Key key);
+  void key_decodation(const sf::Keyboard::Key key, Element & prim_element);
   
   // (Re)Draw some possible artefacts on top of fractal structure
   void draw_artefacts(sf::RenderWindow & win, AutoScale & rescale);

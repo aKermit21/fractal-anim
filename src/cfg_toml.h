@@ -36,12 +36,13 @@ struct CfgToml {
   //   std::string str;
   // };
   
-  std::string loadNextConfig(std::string filePath,
+  std::string loadNextConfig(std::string filePath, Element & prim_element,
                       T_Algo_Arr & transform_algo, T_Col_Palet & colors);
   
 private:
   bool loadNextConfigInternal(std::string filePath, std::string & info,
-                      T_Algo_Arr & transform_algo, T_Col_Palet & colors);
+                            Element & prim_element, T_Algo_Arr & transform_algo,
+                            T_Col_Palet & colors);
 
   bool loadTomlConfig(std::string filePath);
   

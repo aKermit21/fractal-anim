@@ -127,7 +127,7 @@ std::string LogText::search_file_path(void) {
 }
 
 
-void LogText::log_snapshot(std::string sData) {
+void LogText::log_snapshot(std::string sData, const Element& prim_element) {
 
   std::string filepath_str { search_file_path() };
   
@@ -150,11 +150,16 @@ void LogText::log_snapshot(std::string sData) {
     
     // print log head in toml
     fout << "#-------------------------------------------------------------" << "\n\n";
-    fout << "[[config]]" << "\n\n"// << std::setw(0)
+    fout << "[[config]]" << "\n\n"
       << "  description = \"\"" << " # <- add some text to be displayed" << '\n'
-      << "  time-date = \"" << timeString << "\"\n" << std::endl;
-
-    // TODO: Add primary element
+      << "  time-date = \"" << timeString << "\"\n\n"
+      << "  [config.primary]  # Primary element location/size\n"
+      << "    x = " << prim_element.stem_xy.vec_xy.x / cTran::AccurMltp << '\n'
+      << "    y = " << prim_element.stem_xy.vec_xy.y / cTran::AccurMltp << '\n'
+      << "    dx = " << prim_element.stem_xy.vec_xy.dx / cTran::AccurMltp << '\n'
+      << "    dy = " << prim_element.stem_xy.vec_xy.dy / cTran::AccurMltp << '\n'
+      << "    width = " << abs(prim_element.stem_xy.y2-prim_element.stem_xy.y1)
+                             / cTran::AccurMltp << '\n' << std::endl;
 
     // Takes snpashot data from base classes
     fout << sData;
@@ -167,12 +172,13 @@ void LogText::log_snapshot(std::string sData) {
 };
 
 
-void LogText::load_next_snapshot(T_Algo_Arr & transform_algo, T_Col_Palet & colors) {
+void LogText::load_next_snapshot(Element& prim_element, T_Algo_Arr & transform_algo,
+                                 T_Col_Palet & colors) {
   // File shall be immediately closed after any operation
   assert(!file_opened);
 
   loaded_snapshot_info_str =
-    cfgToml.loadNextConfig(search_file_path(), transform_algo, colors);
+    cfgToml.loadNextConfig(search_file_path(), prim_element, transform_algo, colors);
 }
 
   

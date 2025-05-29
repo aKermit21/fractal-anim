@@ -11,6 +11,7 @@
 #include "dbg_report.h"
 #include "animation.h"
 #include "colors.h"
+#include "fractal.h"
 #include "light.h"
 #include "demo_func.h"
 #include <sstream>
@@ -94,7 +95,8 @@ void MainProgAggr::draw_artefacts(sf::RenderWindow & win, AutoScale & rescale) {
 
 // General key decodation
 // can be dispatched to subordinate classes/structs
-void MainProgAggr::key_decodation(const sf::Keyboard::Key key) {
+void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
+                                  Element& prim_element) {
   if (key == sf::Keyboard::Space) {
     // Stop both types of animation
     if (m_demoActive) { movWind.stopAnimation(); }
@@ -112,19 +114,19 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key) {
   } 
   else if (key == sf::Keyboard::F2) {
     // Store fractal snapshot/configuration: transformations and colors
-    logtxt.log_snapshot( prepareSnapshotData());
+    logtxt.log_snapshot( prepareSnapshotData(), prim_element);
     // Display confirmation
     logtxt.startSavedDraw();
   } 
   else if (key == sf::Keyboard::F3) {
     // Retrieve fractal snapshot/configuration from file
-    logtxt.load_next_snapshot( movWind.algo_data, ColorPal::s_col_palet);
+    logtxt.load_next_snapshot( prim_element, movWind.algo_data, ColorPal::s_col_palet);
     // Refresh also flash color pallete
     colorPal.calc_flash_color_pallet(LightS::s_lightColor);
     // In case of change of leaf contruction reset flash
     colorPal.reset_flash_algo();
     movWind.resumeTimeFlow();
-    // Allow display shaphot
+    // Allow display snapshot description (or time)
     logtxt.startSnapshotDraw();
   } 
   else if (key == sf::Keyboard::PageUp) {
