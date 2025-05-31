@@ -18,6 +18,7 @@
 #include "toml++/toml.hpp"
 #include "transform.h"
 #include <cassert>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
@@ -79,11 +80,6 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   T_Col_Palet tmp_colors {};
   Element tmp_prim {};
   
-  // std::cout << thisConfig.at_path("colors.level[0]").type() << '\n';
-  // std::cout << thisConfig.at_path("colors.level[0].begin").type() << '\n';
-  std::cout << thisConfig["primary"]["width"].type() << '\n';
-  std::cout << thisConfig["primary"]["width"].is_integer() << '\n';
-
   // Retrieving transform part
   // 
   // Reposition reading
@@ -189,15 +185,12 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   if (!tmpint) return false;
   tmp_prim.stem_xy.vec_xy.dy = *tmpint * cTran::AccurMltp;
   
-  if (!thisConfig["primary"]["width"].is_integer()) return false;
-  auto tmpwidth = thisConfig["primary"]["width"].value<int>();
-  if (!tmpwidth) return false;
-  // TODO: Make more general width -> x1,x2,y1,y2 calculation
-  // also for non-horizontal stem
-  tmp_prim.stem_xy.y1 = tmp_prim.stem_xy.vec_xy.y - (*tmpwidth * cTran::AccurMltp / 2);
-  tmp_prim.stem_xy.y2 = tmp_prim.stem_xy.vec_xy.y + (*tmpwidth * cTran::AccurMltp / 2);
-  tmp_prim.stem_xy.x1 = tmp_prim.stem_xy.vec_xy.x;
-  tmp_prim.stem_xy.x2 = tmp_prim.stem_xy.vec_xy.x;
+  // if (!thisConfig["primary"]["width"].is_number()) return false;
+  // auto tmpwidth = thisConfig["primary"]["width"].value<float>();
+  // if (!tmpwidth) return false;
+  // // Calculate coordinates of stem taking given width
+  // tmp_prim.stem_xy.width = *tmpwidth;
+  tmp_prim.stem_xy.recalculateStemWidthCoordinates(1.0); // No adjustment
   
   // Copy this to live Element
   prim_element.stem_xy = tmp_prim.stem_xy;

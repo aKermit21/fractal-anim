@@ -90,6 +90,9 @@ struct Stem{
   void repositionStemAbsolute(const int dx, const int dy);
   // Shrink stem according to given (usable) window Center
   void shrinkStemCenter(float factor, float cumulativeFactor, int xCenter, int yCenter);
+  // Calculate coordinates of stem with some possible adjustmement (due to autoscale)
+  void recalculateStemWidthCoordinates(float cumulativeFactor);
+
   virtual void draw_stem(sf::RenderWindow &win, short level, const bool freezeTime);
   // // to be used by Flash Light version
   // virtual bool light_vec_angle_flip() = 0;

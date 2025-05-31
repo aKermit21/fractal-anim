@@ -12,6 +12,7 @@
 #include "animation.h"
 #include "fractal.h"
 #include <SFML/Window/Keyboard.hpp>
+#include <cmath>
 #include <cstdlib>
 #include <sstream>
 #include <assert.h>
@@ -35,6 +36,7 @@ void Element::initPrimary() {
   // prevent initial angle change
   stem_xy.prev_l_angle = lAngleUnknown;
 }
+
 
 // Tranform parent vector (also stem data) to the child one 
 // considering index and branch type

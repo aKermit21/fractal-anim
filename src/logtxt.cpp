@@ -16,6 +16,7 @@
 #include "transform.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 #include <stdlib.h>
@@ -157,9 +158,7 @@ void LogText::log_snapshot(std::string sData, const Element& prim_element) {
       << "    x = " << prim_element.stem_xy.vec_xy.x / cTran::AccurMltp << '\n'
       << "    y = " << prim_element.stem_xy.vec_xy.y / cTran::AccurMltp << '\n'
       << "    dx = " << prim_element.stem_xy.vec_xy.dx / cTran::AccurMltp << '\n'
-      << "    dy = " << prim_element.stem_xy.vec_xy.dy / cTran::AccurMltp << '\n'
-      << "    width = " << abs(prim_element.stem_xy.y2-prim_element.stem_xy.y1)
-                             / cTran::AccurMltp << '\n' << std::endl;
+      << "    dy = " << prim_element.stem_xy.vec_xy.dy / cTran::AccurMltp << '\n' << std::endl;
 
     // Takes snpashot data from base classes
     fout << sData;

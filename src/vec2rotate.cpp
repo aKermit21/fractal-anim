@@ -57,6 +57,26 @@ void Stem::reposition_stem(const int promile, Stem::ThickLevel level) {
 }
 
 
+// Calculate coordinates of stem taking given width
+void Stem::recalculateStemWidthCoordinates(float cumulativeFactor) {
+  // Use multiplied values for better accuracy tranformation
+  float stem_x, stem_y, length;
+  // create perpendicular vector of given width
+  stem_x = -vec_xy.dy;
+  stem_y = vec_xy.dx;
+  length = std::sqrt(stem_x*stem_x + stem_y*stem_y);
+  auto adjustedStemWidth = cumulativeFactor * cFrac::PrimStemWidth;
+  y1 = static_cast<int>
+    (vec_xy.y - stem_y * ((adjustedStemWidth/length) * cTran::AccurMltp ));
+  y2 = static_cast<int>
+    (vec_xy.y + stem_y * ((adjustedStemWidth/length) * cTran::AccurMltp ));
+  x1 = static_cast<int>
+    (vec_xy.x - stem_x * ((adjustedStemWidth/length) * cTran::AccurMltp ));
+  x2 = static_cast<int>
+    (vec_xy.x + stem_x * ((adjustedStemWidth/length) * cTran::AccurMltp ));
+}
+
+
 // Shrink stem according to given (usable) window Center
 // used for auto-scaling
 void Stem::shrinkStemCenter(float factor, float cumulativeFactor, 
@@ -77,14 +97,8 @@ void Stem::shrinkStemCenter(float factor, float cumulativeFactor,
   vec_xy.dx *= factor; 
   vec_xy.dy *= factor;
 
-  // update stem width
-  x1 = vec_xy.x;
-  x2 = vec_xy.x;
-  // width stem proportional to cumulative shrinking
-  y1 = vec_xy.y - ((cFrac::PrimStemWidth * cTran::AccurMltp) 
-                                  * cumulativeFactor); 
-  y2 = vec_xy.y + ((cFrac::PrimStemWidth * cTran::AccurMltp)
-                                  * cumulativeFactor); 
+  // Calculate coordinates of stem taking given width
+  recalculateStemWidthCoordinates(cumulativeFactor);
 }
 
 // move by given (absolute) dx dy
