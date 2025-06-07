@@ -29,7 +29,7 @@ Key Functions
      U             Up all colors by 20% (reverse to previous)
      H             Global flash of active (High) color
 
-     ~   MovWind   Animation: Wind (wobbling)
+     ~   MovWind   Animation: Trembling (wind) on/off
 	
      O   MovAnim   Animation: Opening
      C             Animation: Closing

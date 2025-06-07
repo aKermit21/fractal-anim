@@ -13,6 +13,7 @@
 #include "dbg_report.h"
 #include "garbage_coll.h"
 #include "transform.h"
+#include "windy.h"
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <chrono>
 
@@ -78,7 +79,7 @@ bool recurance_elements_creation(Element * const parent_ptr, const short level)
 
 
 bool recurance_elements_redraw(Element * const parent_ptr, const short level, 
-           sf::RenderWindow &win, const MovAnim &algo_anim, AutoScale & autoscale)
+           sf::RenderWindow &win, const MovWind &algo_anim, AutoScale & autoscale)
 {
   static long recur_funct_cnt { 0 };
 
@@ -108,7 +109,9 @@ bool recurance_elements_redraw(Element * const parent_ptr, const short level,
 
   if (level > 0) {  // level 0 does NOT undergo transformation
     // Tranform this vector (base on settings copied from parent) to the new one 
-    parent_ptr->transform_vec_stem(algo_anim.algo_data);
+    parent_ptr->transform_vec_stem(algo_anim.algo_data,
+                                   algo_anim.algo_data_wind,
+                                   algo_anim.wind_anim_state);
   }
 
   autoscale.findMinMax(parent_ptr->stem_xy.vec_xy);

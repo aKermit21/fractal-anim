@@ -15,6 +15,7 @@
 #include "transform.h"
 #include "garbage_coll.h"
 #include "logtxt.h"
+#include "windy.h"
 #include <algorithm>
 #include <cassert>
 #include <exception>
@@ -29,7 +30,7 @@
 bool recurance_elements_creation(Element * prim_ptr, short level);
 
 bool recurance_elements_redraw(Element * const prim_ptr, const short level, 
-                sf::RenderWindow & win, const MovAnim & algo_anim, AutoScale & autoScale);
+                sf::RenderWindow & win, const MovWind & algo_anim, AutoScale & autoScale);
 
 
 int main(int argc, const char** argv)

@@ -114,6 +114,7 @@ private:
 
 
 // Common transformation basics - see tranform.h
+// live transformation version used for calculations
 struct DRec {
   int repos;  // move (reposition) in promile
   int angle;  // of a rotation for up branch
@@ -121,6 +122,7 @@ struct DRec {
   float scale; 
 };
 
+// compact transformation version used for storing data
 struct DRecSymm {
   int repos;  // move (reposition) in promile
   int angle;  // of a rotation in 0.1 deg
@@ -130,6 +132,8 @@ struct DRecSymm {
 using T_Algo_Arr = std::array<DRec, cFrac::NrOfElements>;
 using T_Algo_Arr_Symm = std::array<DRecSymm, cFrac::NrOfElements>;
 
+// More general algo - each level has diffrent angle
+using T_Wind_Algo_Arr = std::array<T_Algo_Arr, cFrac::NrOfOrders>;
 
 /* Single Element of Fractal */
 struct Element {
@@ -146,7 +150,9 @@ struct Element {
   Element *parent_ptr = {}; // pointer to previous already existing object
   // Tranform vec/stem from parent using special transformation array
   // - method for static (single frame) drawing
-  void transform_vec_stem(T_Algo_Arr const & algo_data); 
+  void transform_vec_stem(T_Algo_Arr const & algo_data,
+                          T_Wind_Algo_Arr const & algo_wind_data,
+                          const bool windEffect); 
   void initPrimary();   // Init data for first element 
 };
 

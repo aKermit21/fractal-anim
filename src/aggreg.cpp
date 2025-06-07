@@ -14,6 +14,7 @@
 #include "fractal.h"
 #include "light.h"
 #include "demo_func.h"
+#include <SFML/Window/Keyboard.hpp>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -144,11 +145,12 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
     movWind.resumeTimeFlow();
   } 
   else {
-    if (key == sf::Keyboard::P) {
-      // In case of change of leaf contruction reset flash
+    if ((key == sf::Keyboard::P) or (key == sf::Keyboard::Tilde)) {
+      // Additional global action in some cases
       colorPal.reset_flash_algo();
       movWind.resumeTimeFlow();
     }
+    // Scan for subordinate classes key actiions 
     bool keyFound = false;
     // possible Colors Palletes related control
     keyFound |= colorPal.key_decodation(key);

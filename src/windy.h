@@ -24,17 +24,18 @@ struct MovWind : MovAnim {
     Dbg::report_info("Init: TrWindy (speed=)", speed); 
     wind_anim_state = false;
     original_algo_data = algo_data;
-    pre_modif = precalc_sinuses();
-    srand( time(NULL));
   }
 
-  struct WindRec {
-    bool started_up; // this is to start diffrent branches on diffrent time
-    unsigned int modif_index_up; // indexing (rolling through) sinus table
-    // The same for down branches
-    bool started_down; 
-    unsigned int modif_index_down; 
-  };
+  // More general algo - each level has diffrent angle
+  // using T_Wind_Algo_Arr = std::array<T_Algo_Arr, cFrac::NrOfOrders>;
+  
+  // struct WindRec {
+  //   bool started_up; // this is to start diffrent branches on diffrent time
+  //   unsigned int modif_index_up; // indexing (rolling through) sinus table
+  //   // The same for down branches
+  //   bool started_down; 
+  //   unsigned int modif_index_down; 
+  // };
 
   // animation related keys handling
   bool key_decodation(sf::Keyboard::Key key);
@@ -45,30 +46,18 @@ struct MovWind : MovAnim {
 
   void stop_wind();
 
-private:
-
-  constexpr static unsigned int AngleLap = 10;
-  // Max angle deviation of wind factor (0.1 deg)
-  constexpr static unsigned int MaxDeviation = 15;
-
-  constexpr static unsigned int AngleTableSize = static_cast<unsigned int>(360 / AngleLap);
-  
   bool wind_anim_state;
   
-  // Array of precalcuated modifications
-  // (360 - going around with sinus)
-  using T_PreSinuses = std::array<int, AngleTableSize>;
-  T_PreSinuses pre_modif;
+  // Transformation full algorithm data including windy effect
+  // More specific algo: per level
+  // TODO: Use this at re-draw
+  T_Wind_Algo_Arr algo_data_wind;
 
+private:
+
+  T_Wind_Algo_Arr conv_to_wind(T_Algo_Arr);
+  
   // Unmodified (by wind algo) transformation data
   T_Algo_Arr original_algo_data;
 
-  // modification to be impose on top of algo_data
-  std::array<WindRec, cFrac::NrOfElements> modif_algo_data {};
-
-  // modification indexes for Lower branch
-  // to get asymmetrical wobbling
-  std::array<WindRec, cFrac::NrOfElements> modif_algo_data_down {};
-
-  T_PreSinuses precalc_sinuses();
 };

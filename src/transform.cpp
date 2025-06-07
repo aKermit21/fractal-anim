@@ -11,6 +11,7 @@
 #include "dbg_report.h"
 #include "animation.h"
 #include "fractal.h"
+#include "windy.h"
 #include <SFML/Window/Keyboard.hpp>
 #include <cmath>
 #include <cstdlib>
@@ -40,7 +41,9 @@ void Element::initPrimary() {
 
 // Tranform parent vector (also stem data) to the child one 
 // considering index and branch type
-void Element::transform_vec_stem(const T_Algo_Arr &algo_data) {
+void Element::transform_vec_stem(const T_Algo_Arr &algo_data, 
+                          T_Wind_Algo_Arr const & algo_wind_data,
+                          const bool windActive) { 
   
   int promile; // reposition begining of stem along parent line (in promile)
   int angle;   // rotation
@@ -59,11 +62,19 @@ void Element::transform_vec_stem(const T_Algo_Arr &algo_data) {
       promile = algo_data.at(arr_index).repos; 
       scale = algo_data.at(arr_index).scale;
       if (b_type == upBranch) {
-        angle = algo_data.at(arr_index).angle;
+        if (!windActive or (order >= cFrac::NrOfOrders)) {
+          angle = algo_data.at(arr_index).angle;
+        } else {
+          angle = algo_wind_data.at(order-1).at(arr_index).angle;
+        }
       }
       else {
         // Down Branch
-        angle = algo_data.at(arr_index).angle_down;
+        if (!windActive or (order >= cFrac::NrOfOrders)) {
+          angle = algo_data.at(arr_index).angle_down;
+        } else {
+          angle = algo_wind_data.at(order-1).at(arr_index).angle_down;
+        }
         // For symmetrical
         //   angle = -angle; // reverse angle
       }

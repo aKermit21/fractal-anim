@@ -11,35 +11,24 @@
 #include "animation.h"
 #include "dbg_report.h"
 #include "fractal.h"
+#include "transform.h"
 #include <cmath>
-
-MovWind::T_PreSinuses MovWind::precalc_sinuses() {
-  T_PreSinuses pre_copy;
-  unsigned int angle;
-  float angle_rad;
-  float temp;
-  // std::cout << "angle : sinus\n";
-  for (unsigned int i=0; i < AngleTableSize; ++i) {
-    angle = i * AngleLap;
-    // Converting degrees to radians
-    angle_rad = angle * 3.14159 / 180.f;
-    temp = sin(angle_rad) * MaxDeviation;
-    //Print this
-    pre_copy[i] = static_cast<int>(temp);
-    // std::cout << angle << " : " << temp << " : " << pre_copy[i] << "\n";
-  }
-  return pre_copy;
-}
+#include <cstdlib>
 
 // animation related keys handling
 bool MovWind::key_decodation(sf::Keyboard::Key key) {
   if (key == sf::Keyboard::Tilde) {
     if (!wind_anim_state) {
-      // If first started store unmodified transformation
+      // If just started store unmodified transformation
       original_algo_data = algo_data;
+      // copy Algo per level
+      algo_data_wind = conv_to_wind(algo_data);
+      srand( time(NULL));
+      // start wind (wobbling) modification
+      wind_anim_state = true;
+    } else {
+      wind_anim_state = false;
     }
-    // start wind (wobbling) modification
-    wind_anim_state = true;
     return true; // my key
   }
   else {
@@ -48,15 +37,28 @@ bool MovWind::key_decodation(sf::Keyboard::Key key) {
   }
 }
 
+T_Wind_Algo_Arr MovWind::conv_to_wind(T_Algo_Arr assym_algo){
+  T_Wind_Algo_Arr temp_algo;
+  for (size_t level {0}; level < cFrac::NrOfOrders; ++level) {
+    for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
+      temp_algo[level][elem].angle = assym_algo[elem].angle;
+      temp_algo[level][elem].angle_down = assym_algo[elem].angle_down;
+      // Those below two shall not be varing
+      temp_algo[level][elem].repos = assym_algo[elem].repos;
+      temp_algo[level][elem].scale = assym_algo[elem].scale;
+    }
+  }
+  return temp_algo;
+}
+
 void MovWind::stop_wind() {
   if (wind_anim_state) {
     // stop wind (wobbling) modification if it was running
     wind_anim_state = false;
     // restore non-modified transformation algo
     algo_data = original_algo_data;
+    // reset flash algo done by higher aggreg class
     }
-  // reset started flags
-  modif_algo_data = {};
 }
 
 
@@ -64,52 +66,41 @@ void MovWind::stop_wind() {
 void MovWind::one_step_cfg_change() {
   // call also other animation
   MovAnim::one_step_cfg_change();
-  
-  if (wind_anim_state) {
-    // go through up branch
-    for (unsigned int br = 0; br < cFrac::NrOfElements; ++br) {
-      if (modif_algo_data[br].started_up) {
-        // roll through sinuses values circular buffer
-        auto temp_ind = modif_algo_data[br].modif_index_up;
-        ++temp_ind;
-        if (temp_ind > AngleTableSize -1) {
-          temp_ind = 0;
-        }
-        // modify transformation algo_data
-        algo_data[br].angle = original_algo_data[br].angle 
-          + pre_modif[temp_ind];
-        // store modification index
-        modif_algo_data[br].modif_index_up = temp_ind;
-      }
-      else {
-        // random start it
-        if ((rand() % AngleTableSize) == 0)
-          modif_algo_data[br].started_up = true; 
-      }
-    }    
+  constexpr static int cTolerance { 25 };
 
-    // go through down branch separatelly - assymetrical animation
-    for (unsigned int br = 0; br < cFrac::NrOfElements; ++br) {
-      if (modif_algo_data[br].started_down) {
-        // roll through sinuses values circular buffer
-        auto temp_ind = modif_algo_data[br].modif_index_down;
-        ++temp_ind;
-        if (temp_ind > AngleTableSize -1) {
-          temp_ind = 0;
+  if (wind_anim_state) {
+    for (size_t level {0}; level < cFrac::NrOfOrders; ++level) {
+      int step = cTran::accurAngleMltp / 3;
+      // higher level bigger trembling
+      step *= level+1;
+      for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
+        auto delta = algo_data_wind[level][elem].angle - algo_data[elem].angle;
+        auto delta_down = algo_data_wind[level][elem].angle_down
+                          - algo_data[elem].angle_down;
+
+        // Assymetric random changes for too big deviations
+        if (delta > cTran::accurAngleMltp * cTolerance) {
+          algo_data_wind[level][elem].angle += (rand() % (2*step)) - 3*step/2;
+        } else if (delta < - cTran::accurAngleMltp * cTolerance) {
+          algo_data_wind[level][elem].angle += (rand() % (2*step)) - 1*step/2;
+        } else {
+          // Random symmetric changes otherwise
+          algo_data_wind[level][elem].angle += (rand() % (2*step)) - step;
         }
-        // modify transformation algo_data
-        algo_data[br].angle_down = original_algo_data[br].angle_down 
-          + pre_modif[temp_ind];
-        // store modification index
-        modif_algo_data[br].modif_index_down = temp_ind;
-      }
-      else {
-        // random start it
-        if ((rand() % AngleTableSize) == 0)
-          modif_algo_data[br].started_down = true; 
+        
+        // Assymetric random changes for too big deviations
+        if (delta_down > cTran::accurAngleMltp * cTolerance) {
+          algo_data_wind[level][elem].angle_down += (rand() % (2*step)) - 3*step/2;
+        } else if (delta_down < - cTran::accurAngleMltp * cTolerance) {
+          algo_data_wind[level][elem].angle_down += (rand() % (2*step)) - 1*step/2;
+        } else {
+          // Random symmetric changes otherwise
+          algo_data_wind[level][elem].angle_down += (rand() % (2*step)) - step;
+        }
       }
     }
   }
+  
 }
 
 
