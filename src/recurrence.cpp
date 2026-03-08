@@ -17,7 +17,9 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <chrono>
 
-bool recurance_elements_creation(Element * const parent_ptr, const short level)
+// Allocate subordinate elements/branches
+// and initialize with structural data
+bool new_elements_creation(Element * const parent_ptr, const short level)
 {
   static unsigned long recur_funct_cnt { 0 };
 
@@ -52,8 +54,6 @@ bool recurance_elements_creation(Element * const parent_ptr, const short level)
     it->index = ++ind;  // 1..cFrac::NrOfElements
     it->stem_xy.prev_l_angle = lAngleUnknown;
     it->parent_ptr = parent_ptr; // link to already existing parent
-    // Try create next level
-    recurance_elements_creation(it, level+1);
   }
   
   // Setup UP branch
@@ -69,8 +69,6 @@ bool recurance_elements_creation(Element * const parent_ptr, const short level)
     it->index = ++ind;  // 1..cFrac::NrOfElements
     it->stem_xy.prev_l_angle = lAngleUnknown;
     it->parent_ptr = parent_ptr; // link to already existing parent
-    // Try create next level
-    recurance_elements_creation(it, level+1);
   }
   
   return true; // something created
@@ -139,9 +137,17 @@ bool recurance_elements_redraw(Element * const parent_ptr, const short level,
     }
   }  
 
+   assert((parent_ptr->children_down != nullptr and
+           parent_ptr->children_up != nullptr )
+      or  (parent_ptr->children_down == nullptr and
+           parent_ptr->children_up == nullptr ));
+  
+  // if needed - create next subordinate braches level starting from current branch
   if (parent_ptr->children_down == nullptr) {
-    Dbg::report_error("Next level not initialized: ", level+1);
-    return false;
+    auto success = new_elements_creation(parent_ptr, level +1);
+    if (!success) {
+      return false;
+    }
   }
 
   // Follow DOWN branch

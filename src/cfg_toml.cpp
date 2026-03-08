@@ -17,6 +17,7 @@
 #include "toml++/impl/parser.hpp"
 #include "toml++/toml.hpp"
 #include "transform.h"
+#include <bitset>
 #include <cassert>
 #include <cmath>
 #include <cstddef>
@@ -67,6 +68,14 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   assert(m_configMaxNumber > -1);
 
   // m_fileconfigState = cFileConfigCorrupted; // after succesfull parsing change this
+
+  // Iterate configs from list starting from end
+  if (m_currentConfig == 0) {
+    m_currentConfig = m_configMaxNumber;
+  } else {
+    --m_currentConfig;
+  }
+
    
   toml::table * table_ptr = allConfig["config"][m_currentConfig].as_table();
   if (!table_ptr) return false; // error
@@ -119,45 +128,140 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   tranform_algo = tmp_tran_algo;
   
   // Retrieving Color part
-  // 
+  // For this part it is acceptable partial faulty config read 
+  T_Result_Flags resultFlags { 0 };
+  StemColor prev_colors {};
+  
   for (size_t i=0; i < cFrac::NrOfOrders+1; ++i) {
+    bool typeFault = false;
+    
     // Begin stem color
     // Red
-    if(!thisConfig["colors"]["level"][i]["begin"]["red"].is_integer()) return false;
+    typeFault = false;
+    if(!thisConfig["colors"]["level"][i]["begin"]["red"].is_integer()) {
+      typeFault = true;
+    }
     std::optional<int> tmpint = thisConfig["colors"]["level"][i]["begin"]["red"].value<int>();
-    if (!tmpint) return false;
-    tmp_colors[i].begin_c.r = *tmpint;
-  
+    if (tmpint and !typeFault) {
+      tmp_colors[i].begin_c.r = *tmpint;
+      prev_colors.begin_c.r = *tmpint;
+    } else {
+      // Cannot decode
+      if (i == 0) {
+        ColorFatalError(resultFlags, m_currentConfig);
+        return false;
+      } else {
+        // Use previous order color and continue
+        tmp_colors[i].begin_c.r = prev_colors.begin_c.r;
+        resultFlags.set(cFlagMissingColorWarning);
+      }
+    }   
+
     // Green
-    if(!thisConfig["colors"]["level"][i]["begin"]["green"].is_integer()) return false;
+    typeFault = false;
+    if(!thisConfig["colors"]["level"][i]["begin"]["green"].is_integer()) {
+      typeFault = true;
+    }
     tmpint = thisConfig["colors"]["level"][i]["begin"]["green"].value<int>();
-    if (!tmpint) return false;
-    tmp_colors[i].begin_c.g = *tmpint;
+    if (tmpint and !typeFault) {
+      tmp_colors[i].begin_c.g = *tmpint;
+      prev_colors.begin_c.g = *tmpint;
+    } else {
+      // Cannot decode
+      if (i == 0) {
+        ColorFatalError(resultFlags, m_currentConfig);
+        return false;
+      } else {
+        // Use previous order color and continue
+        tmp_colors[i].begin_c.g = prev_colors.begin_c.g;
+        resultFlags.set(cFlagMissingColorWarning);
+      }
+    }   
    
     // Blue
-    if(!thisConfig["colors"]["level"][i]["begin"]["blue"].is_integer()) return false;
+    typeFault = false;
+    if(!thisConfig["colors"]["level"][i]["begin"]["blue"].is_integer()) {
+      typeFault = true;
+    }
     tmpint = thisConfig["colors"]["level"][i]["begin"]["blue"].value<int>();
-    if (!tmpint) return false;
-    tmp_colors[i].begin_c.b = *tmpint;
+    if (tmpint and !typeFault) {
+      tmp_colors[i].begin_c.b = *tmpint;
+      prev_colors.begin_c.b = *tmpint;
+    } else {
+      // Cannot decode
+      if (i == 0) {
+        ColorFatalError(resultFlags, m_currentConfig);
+        return false;
+      } else {
+        // Use previous order color and continue
+        tmp_colors[i].begin_c.b = prev_colors.begin_c.b;
+        resultFlags.set(cFlagMissingColorWarning);
+      }
+    }   
   
     // End stem color
     // Red
-    if(!thisConfig["colors"]["level"][i]["end"]["red"].is_integer()) return false;
+    typeFault = false;
+    if(!thisConfig["colors"]["level"][i]["end"]["red"].is_integer()) {
+      typeFault = true;
+    }
     tmpint = thisConfig["colors"]["level"][i]["end"]["red"].value<int>();
-    if (!tmpint) return false;
-    tmp_colors[i].end_c.r = *tmpint;
-  
+    if (tmpint and !typeFault) {
+      tmp_colors[i].end_c.r = *tmpint;
+      prev_colors.end_c.r = *tmpint;
+    } else {
+      // Cannot decode
+      if (i == 0) {
+        ColorFatalError(resultFlags, m_currentConfig);
+        return false;
+      } else {
+        // Use previous order color and continue
+        tmp_colors[i].end_c.r = prev_colors.end_c.r;
+        resultFlags.set(cFlagMissingColorWarning);
+      }
+    }   
+
     // Green
-    if(!thisConfig["colors"]["level"][i]["end"]["green"].is_integer()) return false;
+    typeFault = false;
+    if(!thisConfig["colors"]["level"][i]["end"]["green"].is_integer()) {
+      typeFault = true;
+    }
     tmpint = thisConfig["colors"]["level"][i]["end"]["green"].value<int>();
-    if (!tmpint) return false;
-    tmp_colors[i].end_c.g = *tmpint;
+    if (tmpint and !typeFault) {
+      tmp_colors[i].end_c.g = *tmpint;
+      prev_colors.end_c.g = *tmpint;
+    } else {
+      // Cannot decode
+      if (i == 0) {
+        ColorFatalError(resultFlags, m_currentConfig);
+        return false;
+      } else {
+        // Use previous order color and continue
+        tmp_colors[i].end_c.g = prev_colors.end_c.g;
+        resultFlags.set(cFlagMissingColorWarning);
+      }
+    }   
    
     // Blue
-    if(!thisConfig["colors"]["level"][i]["end"]["blue"].is_integer()) return false;
+    typeFault = false;
+    if(!thisConfig["colors"]["level"][i]["end"]["blue"].is_integer()) {
+      typeFault = true;
+    }
     tmpint = thisConfig["colors"]["level"][i]["end"]["blue"].value<int>();
-    if (!tmpint) return false;
-    tmp_colors[i].end_c.b = *tmpint;
+    if (tmpint and !typeFault) {
+      tmp_colors[i].end_c.b = *tmpint;
+      prev_colors.end_c.b = *tmpint;
+    } else {
+      // Cannot decode
+      if (i == 0) {
+        ColorFatalError(resultFlags, m_currentConfig);
+        return false;
+      } else {
+        // Use previous order color and continue
+        tmp_colors[i].end_c.b = prev_colors.end_c.b;
+        resultFlags.set(cFlagMissingColorWarning);
+      }
+    }   
   }
 
   // Copy this to live color palete
@@ -226,12 +330,13 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   }
   info = ss_info.str();
   Dbg::report_info(info);
-  
-  // Next time config
-  if (m_currentConfig == 0) {
-    m_currentConfig = m_configMaxNumber;
+
+  if (resultFlags.test(cFlagError)) {
+    return false;
+  } else if (resultFlags.test(cFlagMissingColorWarning)) {
+    Dbg::report_info("TOML config: Some color orders are missing; copying from previous orders");
   } else {
-    --m_currentConfig;
+    // Assumed OK
   }
 
   m_fileconfigState = cFileConfigLoaded; 
@@ -277,10 +382,15 @@ bool CfgToml::loadTomlConfig(std::string filePath){
   if (!allConfigArr.size()) return false; 
   m_configMaxNumber = allConfigArr.size() -1;
 
-  // start from last/latest config
-  m_currentConfig = m_configMaxNumber;
-
   m_fileconfigState = cFileConfigLoaded;
   return true; // success
+}
+
+
+// Report Color decodation Error on first stem - thus cannot assume previous color
+void CfgToml::ColorFatalError(T_Result_Flags & result, int number){
+  Dbg::report_warning("Error parsing colors; cannot continue with configuration ",
+                      m_configMaxNumber - number +1); // Numbering from list end
+  result.set(cFlagColorError);
 }
  

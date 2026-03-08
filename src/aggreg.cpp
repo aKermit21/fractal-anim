@@ -87,6 +87,11 @@ void MainProgAggr::draw_artefacts(sf::RenderWindow & win, AutoScale & rescale) {
   auto speed = movWind.get_speedScale();
   logtxt.speed_draw(win, speed);
   
+  // Welcome Draw at the beginning
+  if (!m_demoActive) {
+    logtxt.welcome_draw(win, speed);
+  }
+  
   // Draw Snapshot saved confirmation
   logtxt.saved_draw(win);
   

@@ -82,7 +82,16 @@ void LogText::snapshot_draw(sf::RenderWindow & win) {
 
 // Welcome 
 void LogText::welcome_draw(sf::RenderWindow & win, int speed) const {
-  textDraw.welcome_draw(win, speed);
+  static int frames { 0 };
+
+  // Present welcome text for double time as Help would be (after F1)
+  if (frames < 2* cHelpDrawFrames) {
+    // Do not print welcome together with help
+    if (help_draw_cnt == 0) {
+      textDraw.welcome_draw(win, speed);
+    }
+    ++frames;
+  }
 }
 
 void LogText::rescale_draw(sf::RenderWindow & win, float scale) const {

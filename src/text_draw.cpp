@@ -113,7 +113,6 @@ void TextDraw::help_draw(sf::RenderWindow &win) const {
 void TextDraw::welcome_draw(sf::RenderWindow &win, int speed) const {
   if (m_font_loaded) {
     std::stringstream text_ss;;
-    text_ss << "Initialization...(wait)\n";
     text_ss << "F1 for help\n";
     text_ss << "Speed scale - " << speed << '\n';
     sf::Text text(text_ss.str(), m_font);

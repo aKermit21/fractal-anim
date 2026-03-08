@@ -27,8 +27,6 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
-bool recurance_elements_creation(Element * prim_ptr, short level);
-
 bool recurance_elements_redraw(Element * const prim_ptr, const short level, 
                 sf::RenderWindow & win, const MovWind & algo_anim, AutoScale & autoScale);
 
@@ -60,16 +58,9 @@ int main(int argc, const char** argv)
     sf::RenderWindow window(sf::VideoMode(cFrac::WindowXsize, cFrac::WindowYsize), 
                             windowName);
 
-    // Initialization...(wait) text
-    fractMain.logtxt.welcome_draw(window, options.optSpeed);
-    window.display();
-  
     // First fractal element (order 0)
     Element prim_element;
     prim_element.initPrimary();
-
-    // Using recurrence algo create all other elements starting from primary one
-    (void)recurance_elements_creation(&prim_element, 1);  // parent node, next level (order)
 
     while (window.isOpen()) {
 
@@ -111,7 +102,7 @@ int main(int argc, const char** argv)
 
       autoScale.cycleResume(prim_element);
 
-      // Light source and/or possible text info
+      // Light source and/or possible text info - on top of picture
       fractMain.draw_artefacts(window, autoScale);
 
       window.display();

@@ -48,6 +48,7 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
   } else { }
   
   assert(order >= 0);
+  assert(order <= cFrac::NrOfOrders +1);
   
   if (order <= 2) {
     if (x1==0 or x2==0 or y1==0 or y2==0) {
@@ -61,6 +62,7 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
       float fvdx = (vec_xy.x + vec_xy.dx)/cTran::AccurMltp_f;
       float fvdy = (vec_xy.y + vec_xy.dy)/cTran::AccurMltp_f;
 
+      
       if (flash_cnt > 0 and LightS::s_lightActive) {
         // Draw Flash version
 

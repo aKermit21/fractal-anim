@@ -15,7 +15,7 @@
 // #include "toml++/impl/forward_declarations.hpp"
 #include "fractal.h"
 #include "toml++/toml.hpp"
-
+#include <bitset>
 
 // Parsing and loading Toml snapshot/config
 struct CfgToml {
@@ -29,22 +29,33 @@ struct CfgToml {
 
   virtual ~CfgToml() { 
     // close config file ?
+    // shall be already closed
   }
 
-  // struct ConfigResult {
-  //   bool success;
-  //   std::string str;
-  // };
-  
+ 
   std::string loadNextConfig(std::string filePath, Element & prim_element,
                       T_Algo_Arr & transform_algo, T_Col_Palet & colors);
   
 private:
+
+  // bit flags regarding config read result
+  [[maybe_unused]] constexpr static int cFlagSuccess { 0 };
+  [[maybe_unused]] constexpr static int cFlagError { 1 };
+  [[maybe_unused]] constexpr static int cFlagColorError { 2 };
+  [[maybe_unused]] constexpr static int cFlagMissingColorWarning { 3 };  // Fallback - using previous color - will be applied
+  [[maybe_unused]] constexpr static int cFlagOtherWarning { 4 };
+  constexpr static int cFlagAllBits { 5 };
+
+  using T_Result_Flags =  std::bitset<cFlagAllBits>;
+  
   bool loadNextConfigInternal(std::string filePath, std::string & info,
                             Element & prim_element, T_Algo_Arr & transform_algo,
                             T_Col_Palet & colors);
 
   bool loadTomlConfig(std::string filePath);
+
+  // Report Color decodation Error on first stem - thus cannot assume previous color
+  void ColorFatalError(T_Result_Flags & result, int config_number);
   
   // config toml file state
   enum FileConfigState {cFileNotChecked, cFileDoesNotExist,
