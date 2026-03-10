@@ -9,9 +9,7 @@
 
 #pragma once
 
-#include "fractal.h"
 #include <string>
-#include <iostream>
 #include <chrono>
 #include <string_view>
 #include <optional>

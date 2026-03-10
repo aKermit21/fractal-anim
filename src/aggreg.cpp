@@ -103,7 +103,7 @@ void MainProgAggr::draw_artefacts(sf::RenderWindow & win, AutoScale & rescale) {
 // can be dispatched to subordinate classes/structs
 void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
                                   Element& prim_element) {
-  if (key == sf::Keyboard::Space) {
+  if (key == sf::Keyboard::Key::Space) {
     // Stop both types of animation
     if (m_demoActive) { movWind.stopAnimation(); }
     else { movWind.stopFreezeAnimation(); }// Freeze time or permanent Stop
@@ -111,20 +111,20 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
     // print current speed scale for # of frames
     logtxt.startSpeedDraw();
   }
-  else if (key == sf::Keyboard::R) {
+  else if (key == sf::Keyboard::Key::R) {
     resetConfig(true); // key action
   }
-  else if (key == sf::Keyboard::F1) {
+  else if (key == sf::Keyboard::Key::F1) {
     // Help text will be appearing for some time
     logtxt.startHelpDraw();
   } 
-  else if (key == sf::Keyboard::F2) {
+  else if (key == sf::Keyboard::Key::F2) {
     // Store fractal snapshot/configuration: transformations and colors
     logtxt.log_snapshot( prepareSnapshotData(), prim_element);
     // Display confirmation
     logtxt.startSavedDraw();
   } 
-  else if (key == sf::Keyboard::F3) {
+  else if (key == sf::Keyboard::Key::F3) {
     // Retrieve fractal snapshot/configuration from file
     logtxt.load_next_snapshot( prim_element, movWind.algo_data, ColorPal::s_col_palet);
     // Refresh also flash color pallete
@@ -135,14 +135,14 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
     // Allow display snapshot description (or time)
     logtxt.startSnapshotDraw();
   } 
-  else if (key == sf::Keyboard::PageUp) {
+  else if (key == sf::Keyboard::Key::PageUp) {
     // Increase size thus speed
     movWind.speedIncrement();
     // draw speed scale for next xx frames
     logtxt.startSpeedDraw();
     movWind.resumeTimeFlow();
   } 
-  else if (key == sf::Keyboard::PageDown) {
+  else if (key == sf::Keyboard::Key::PageDown) {
     // Decrease size thus speed
     movWind.speedDecrement();
     // draw speed scale for next xx frames
@@ -150,7 +150,7 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
     movWind.resumeTimeFlow();
   } 
   else {
-    if ((key == sf::Keyboard::P) or (key == sf::Keyboard::Tilde)) {
+    if ((key == sf::Keyboard::Key::P) or (key == sf::Keyboard::Key::Grave)) {
       // Additional global action in some cases
       colorPal.reset_flash_algo();
       movWind.resumeTimeFlow();

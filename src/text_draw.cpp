@@ -11,6 +11,7 @@
 #include "dbg_report.h"
 #include "fractal.h"
 #include "config.h"
+#include <SFML/System/Vector2.hpp>
 #include <cstddef>
 #include <cstdlib>
 #include <filesystem>
@@ -53,12 +54,11 @@ bool TextDraw::init_font() {
   assert(dir_index <= cSubdirsNum);
   
   // Load fonts from a file
-  if (!m_font.loadFromFile(filepath_str)) {
+  if (!m_font.openFromFile(filepath_str)) {
     Dbg::report_warning("Font file " + filepath_str + " cannot be find/open");
     return false;
-  } else {
-    return true; // fonts loaded
-  }
+  } 
+  return true; // fonts loaded
 }
 
 
@@ -100,11 +100,11 @@ void TextDraw::help_draw(sf::RenderWindow &win) const {
     " P - Rotate Pre-calculated configurations" };
   
   if (m_font_loaded) {
-    sf::Text text(help_text, m_font);
-    text.setCharacterSize(24);
+    sf::Text text(m_font, help_text, 24);
     text.setStyle(sf::Text::Regular);
     text.setFillColor(sf::Color::White);
-    text.setPosition(20,10);
+    sf::Vector2f myPostion(20, 10);
+    text.setPosition(myPostion);
     // Draw it
     win.draw(text);
   }
@@ -115,11 +115,11 @@ void TextDraw::welcome_draw(sf::RenderWindow &win, int speed) const {
     std::stringstream text_ss;;
     text_ss << "F1 for help\n";
     text_ss << "Speed scale - " << speed << '\n';
-    sf::Text text(text_ss.str(), m_font);
-    text.setCharacterSize(30);
+    sf::Text text(m_font, text_ss.str(), 30);
     text.setStyle(sf::Text::Regular);
     text.setFillColor(sf::Color::White);
-    text.setPosition(30,30);
+    sf::Vector2f myPostion(30, 30);
+    text.setPosition(myPostion);
     // Draw it
     win.draw(text);
   }
@@ -129,11 +129,11 @@ void TextDraw::speed_draw(sf::RenderWindow &win, int speed) const {
   if (m_font_loaded) {
     std::stringstream text_ss;;
     text_ss << "Speed scale - " << speed;
-    sf::Text text(text_ss.str(), m_font);
-    text.setCharacterSize(30);
+    sf::Text text(m_font, text_ss.str(), 30);
     text.setStyle(sf::Text::Regular);
     text.setFillColor(sf::Color::White);
-    text.setPosition(30,40);
+    sf::Vector2f myPostion(30, 40);
+    text.setPosition(myPostion);
     // Draw it
     win.draw(text);
   }
@@ -142,11 +142,11 @@ void TextDraw::speed_draw(sf::RenderWindow &win, int speed) const {
 
 void TextDraw::snapshot_draw(sf::RenderWindow &win, std::string & info) const {
   if (m_font_loaded) {
-    sf::Text text(info, m_font);
-    text.setCharacterSize(20);
+    sf::Text text(m_font, info, 20);
     text.setStyle(sf::Text::Regular);
     text.setFillColor(sf::Color::Yellow);
-    text.setPosition(20,20);
+    sf::Vector2f myPostion(20, 20);
+    text.setPosition(myPostion);
     // Draw it
     win.draw(text);
   }
@@ -154,11 +154,11 @@ void TextDraw::snapshot_draw(sf::RenderWindow &win, std::string & info) const {
 
 void TextDraw::saved_draw(sf::RenderWindow &win) const {
   if (m_font_loaded) {
-    sf::Text text("[Saved]", m_font);
-    text.setCharacterSize(20);
+    sf::Text text(m_font, "[Saved]", 20);
     text.setStyle(sf::Text::Regular);
     text.setFillColor(sf::Color::Red);
-    text.setPosition(20,20);
+    sf::Vector2f myPostion(20, 20);
+    text.setPosition(myPostion);
     // Draw it
     win.draw(text);
   }
@@ -172,11 +172,12 @@ void TextDraw::rescale_draw(sf::RenderWindow & win, float scale) const {
     int iScale = static_cast<int>(scale * 100);
     std::stringstream text_ss;;
     text_ss << "Auto-Rescale active [" << iScale << "%]";
-    sf::Text text(text_ss.str(), m_font, cFontSize);
+    sf::Text text(m_font, text_ss.str(), cFontSize);
     text.setStyle(sf::Text::Regular);
     text.setFillColor(sf::Color::Magenta);
     // Put text at the bottom of window
-    text.setPosition(10, cFrac::WindowYsize - cFontSize *2);
+    sf::Vector2f myPostion(10, cFrac::WindowYsize - cFontSize *2);
+    text.setPosition(myPostion);
     // Draw it
     win.draw(text);
   }

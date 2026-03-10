@@ -44,9 +44,9 @@ tomlplusplus_dep = dependency('tomlplusplus', fallback : ['tomlplusplus', 'tomlp
 # SFML - simple 2D graphic (and PC interface) library
 # https://www.sfml-dev.org/
 # shall be MANUALLY installed (at least those 3 modules)
-sfml1_dep = dependency('sfml-graphics', version : '>=2.5.1')
-sfml2_dep = dependency('sfml-system', version : '>=2.5.1')
-sfml3_dep = dependency('sfml-window', version : '>=2.5.1')
+sfml1_dep = dependency('sfml-graphics', version : '>=3.0.0')
+sfml2_dep = dependency('sfml-system', version : '>=3.0.0')
+sfml3_dep = dependency('sfml-window', version : '>=3.0.0')
 
 sfml_all_dep = [ sfml1_dep, sfml2_dep, sfml3_dep ]
 

@@ -12,16 +12,11 @@
 #include "colors.h"
 #include "dbg_report.h"
 #include "fractal.h"
-#include "toml++/impl/node.hpp"
 #include "toml++/impl/parse_error.hpp"
 #include "toml++/impl/parser.hpp"
-#include "toml++/toml.hpp"
 #include "transform.h"
-#include <bitset>
 #include <cassert>
-#include <cmath>
 #include <cstddef>
-#include <cstdint>
 #include <iostream>
 #include <string>
 #include <string_view>

@@ -18,6 +18,7 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <cstdint>
 
 // Static variables placement
 
@@ -34,7 +35,7 @@ bool LightS::s_lightActive { true };
 LightS::RetResult LightS::key_decodation(sf::Keyboard::Key key){
   RetResult retResult { false, false };
   
-  if (key == sf::Keyboard::L) {
+  if (key == sf::Keyboard::Key::L) {
     // Light on/off toggle
     if (s_lightActive) {
       s_lightActive = false;
@@ -42,29 +43,29 @@ LightS::RetResult LightS::key_decodation(sf::Keyboard::Key key){
       s_lightActive = true;
     }
   }
-  else if (key == sf::Keyboard::W) {
+  else if (key == sf::Keyboard::Key::W) {
     rotate_rgb_color_updown(rotateUpColor);
     retResult.colorChanged = true;
   }
-  else if (key == sf::Keyboard::S) {
+  else if (key == sf::Keyboard::Key::S) {
     rotate_rgb_color_updown(rotateDownColor);
     retResult.colorChanged = true;
   } 
-  else  if (key == sf::Keyboard::Q) {
+  else  if (key == sf::Keyboard::Key::Q) {
     move_light_position_by(-25);   // move fast to left
     //TODO: Switch off temporary light
     retResult.lightMoved = true;
   }
-  else if (key == sf::Keyboard::E) {
+  else if (key == sf::Keyboard::Key::E) {
     move_light_position_by(25);   // move fast to right
     //TODO: Switch off temporary light
     retResult.lightMoved = true;
   }
-  else if ((key == sf::Keyboard::A) or (key == sf::Keyboard::D)) {
+  else if ((key == sf::Keyboard::Key::A) or (key == sf::Keyboard::Key::D)) {
     // Light smooth moving realized by light_draw()
     retResult.lightMoved = true;
   }
-  else if (key == sf::Keyboard::G) {
+  else if (key == sf::Keyboard::Key::G) {
     // cycle through modes of rays grid visualization
     auto temp_int = static_cast<int>(rays_mode);
     ++temp_int;
@@ -86,10 +87,10 @@ void LightS::light_draw(sf::RenderWindow &win){
   
   // Move realization
   // Reposition smoothly light while key is being pressed or if demo
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
     move_light_position_by(cMoveSmooth);   // to right
     m_lightMoving = rightMove;
-  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
     move_light_position_by(-cMoveSmooth);  // to left
     m_lightMoving = leftMove;
   } else {
@@ -197,13 +198,14 @@ void LightS::create_ray_line(sf::Vector2f current_line_pos, bool s_fill,
   sf::Vector2f lvecf = sf::Vector2f(s_lightVec);
 
   // position of light is beginning of line
-  sf::Vertex line_element = sf::Vector2f(current_line_pos);
+  sf::Vertex line_element{};
+  line_element.position = sf::Vector2f(current_line_pos);
   // use smaller chunks of original light vector
   lvecf /= 6.f;
 
   // Optionaly start from fill or brake
   if (s_fill) {
-    line_element = sf::Vector2f(current_line_pos); // position of light is beginning of line
+    line_element.position = sf::Vector2f(current_line_pos); // position of light is beginning of line
     line_element.color = dim_color(s_lightColor, 60);
     auxg.append(line_element);
     even_el = false;
@@ -214,7 +216,7 @@ void LightS::create_ray_line(sf::Vector2f current_line_pos, bool s_fill,
   // Add grid sections till vertical end
   do {
     current_line_pos += lvecf; // move line along the lightvector
-    line_element = sf::Vector2f(current_line_pos); // position of light is beginning of line
+    line_element.position = sf::Vector2f(current_line_pos); // position of light is beginning of line
     line_element.color = dim_color(s_lightColor, 60);
     auxg.append(line_element);
     // Switch even/odd element
@@ -236,7 +238,7 @@ void LightS::create_ray_line(sf::Vector2f current_line_pos, bool s_fill,
 // Based on Light position draw rays
 sf::VertexArray LightS::create_rays_grid(sf::Vector2f lpos) {
   
-  sf::VertexArray auxg(sf::Lines);
+  sf::VertexArray auxg(sf::PrimitiveType::Lines);
 
   sf::Vector2f line_pos = lpos;
   bool start_fill = true;
@@ -289,9 +291,9 @@ sf::VertexArray LightS::create_rays_grid(sf::Vector2f lpos) {
 sf::Color LightS::dim_color(sf::Color color, unsigned int percent) {
   sf::Color ret_color;
 
-  ret_color.b = static_cast<sf::Uint8>((color.b * percent) / 100);
-  ret_color.g = static_cast<sf::Uint8>((color.g * percent) / 100);
-  ret_color.r = static_cast<sf::Uint8>((color.r * percent) / 100);
+  ret_color.b = static_cast<std::uint8_t>((color.b * percent) / 100);
+  ret_color.g = static_cast<std::uint8_t>((color.g * percent) / 100);
+  ret_color.r = static_cast<std::uint8_t>((color.r * percent) / 100);
   
   return ret_color;
 } 
@@ -305,7 +307,7 @@ sf::VertexArray LightS::init_rainbow(){
 
   int angle;
   float angle_rad;
-  sf::VertexArray auxl(sf::TriangleFan, cCOLORS_NR+1); // first color repeated
+  sf::VertexArray auxl(sf::PrimitiveType::TriangleFan, cCOLORS_NR+1); // first color repeated
 
   // Take position of light from vector
   float x_pos = static_cast<float>(X_MID - s_lightVec.x);

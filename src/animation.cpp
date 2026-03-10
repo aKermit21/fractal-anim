@@ -17,20 +17,20 @@
 bool MovAnim::key_decodation(sf::Keyboard::Key key) {
   switch (key) {
   // Angle Animation Group
-  case sf::Keyboard::O: // switch to opening
+  case sf::Keyboard::Key::O: // switch to opening
     if (angle_anim_state != angleOpening) {
       make_angle_delta_table();
     }
     angle_anim_state = angleOpening;
     return true;
-  case sf::Keyboard::C: // switch to Closing
+  case sf::Keyboard::Key::C: // switch to Closing
     if (angle_anim_state != angleClosing) {
       make_angle_delta_table();
     }
     angle_anim_state = angleClosing;
     return true;
 
-  case sf::Keyboard::P: // Rotate 
+  case sf::Keyboard::Key::P: // Rotate 
     stopAnimation();
     // Change to another pre-calculated configuration
     rotate_pre_cfg();
@@ -38,19 +38,19 @@ bool MovAnim::key_decodation(sf::Keyboard::Key key) {
     return true;
 
   // Size Animation Group
-  case sf::Keyboard::V:
+  case sf::Keyboard::Key::V:
     // Enlarge first / larger
     resize_anim_state = resizeMaxLarger;
     return true; // my key found
-  case sf::Keyboard::B:
+  case sf::Keyboard::Key::B:
     // Diminish first / larger
     resize_anim_state = resizeMaxSmaller;
     return true;
-  case sf::Keyboard::N:
+  case sf::Keyboard::Key::N:
     // Enlarge last / smaller
     resize_anim_state = resizeMinLarger;
     return true;
-  case sf::Keyboard::M:
+  case sf::Keyboard::Key::M:
     // Diminish last / smaller
     resize_anim_state = resizeMinSmaller;
     return true;

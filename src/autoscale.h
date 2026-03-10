@@ -12,8 +12,6 @@
 #include "dbg_report.h"
 #include "fractal.h"
 #include "transform.h"
-#include <string>
-#include <iostream>
 
 // Min/Max drawing structure defined in Dbg
 // struct VecMinMax {

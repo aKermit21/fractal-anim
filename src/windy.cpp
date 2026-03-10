@@ -17,7 +17,7 @@
 
 // animation related keys handling
 bool MovWind::key_decodation(sf::Keyboard::Key key) {
-  if (key == sf::Keyboard::Tilde) {
+  if (key == sf::Keyboard::Key::Grave) {
     if (!wind_anim_state) {
       // If just started store unmodified transformation
       original_algo_data = algo_data;

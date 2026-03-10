@@ -12,7 +12,6 @@
 #include "light.h"
 #include "transform.h"
 #include "colors.h"
-#include "animation.h"
 #include "assert.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Color.hpp>
@@ -67,7 +66,7 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
         // Draw Flash version
 
         // Filled triangles
-        sf::VertexArray triangle(sf::Triangles, 3);
+        sf::VertexArray triangle(sf::PrimitiveType::Triangles, 3);
         triangle[0].position = sf::Vector2f(fx1,fy1);
         triangle[1].position = sf::Vector2f(fvdx, fvdy);
         triangle[2].position = sf::Vector2f(fx2,fy2);
@@ -82,7 +81,7 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
         // Draw ordinary version
 
         // Empty triangles
-        sf::VertexArray two_lines(sf::Lines, 4);
+        sf::VertexArray two_lines(sf::PrimitiveType::Lines, 4);
         two_lines[0].position = sf::Vector2f(fx1,fy1);
         two_lines[1].position = sf::Vector2f(fvdx, fvdy);
         two_lines[2].position = sf::Vector2f(fx2,fy2);
@@ -107,7 +106,7 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
     if (flash_cnt > 0 and LightS::s_lightActive) {
       // Draw Flash version
       // Double/Triple line thickness
-      sf::VertexArray tri_line(sf::Lines, 6);
+      sf::VertexArray tri_line(sf::PrimitiveType::Lines, 6);
       tri_line[0].position = sf::Vector2f(fvx,fvy);
       tri_line[1].position = sf::Vector2f(fvdx, fvdy);
       tri_line[2].position = sf::Vector2f(fvx +1,fvy);
@@ -127,7 +126,7 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
     } else {
       // Draw ordinary version
       // Single line
-      sf::VertexArray one_line(sf::Lines, 2);
+      sf::VertexArray one_line(sf::PrimitiveType::Lines, 2);
       one_line[0].position = sf::Vector2f(fvx,fvy);
       one_line[1].position = sf::Vector2f(fvdx, fvdy);
       // Regular colors
@@ -158,7 +157,7 @@ void Stem::draw_stem(sf::RenderWindow &win, short order,
       float fy2 = y2/cTran::AccurMltp_f;
       float fvdx = (vec_xy.x + vec_xy.dx)/cTran::AccurMltp_f;
       float fvdy = (vec_xy.y + vec_xy.dy)/cTran::AccurMltp_f;
-      sf::VertexArray two_lines(sf::Lines, 4);
+      sf::VertexArray two_lines(sf::PrimitiveType::Lines, 4);
       two_lines[0].position = sf::Vector2f(fx1,fy1);
       two_lines[1].position = sf::Vector2f(fvdx, fvdy);
       two_lines[2].position = sf::Vector2f(fx2,fy2);
@@ -176,7 +175,7 @@ void Stem::draw_stem(sf::RenderWindow &win, short order,
     float fvy = vec_xy.y/cTran::AccurMltp_f;
     float fvdx = (vec_xy.x + vec_xy.dx)/cTran::AccurMltp_f;
     float fvdy = (vec_xy.y + vec_xy.dy)/cTran::AccurMltp_f;
-    sf::VertexArray one_line(sf::Lines, 2);
+    sf::VertexArray one_line(sf::PrimitiveType::Lines, 2);
     one_line[0].position = sf::Vector2f(fvx,fvy);
     one_line[1].position = sf::Vector2f(fvdx, fvdy);
     one_line[0].color = ColorPal::s_col_palet[order].begin_c;

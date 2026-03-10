@@ -9,10 +9,7 @@
 
 #include "demo_func.h"
 #include "assert.h"
-#include <array>
-#include <cmath>
-#include <iostream>
-#include <cstddef>
+#include <cstdlib>
 
 // Demo common functions
 

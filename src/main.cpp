@@ -7,22 +7,15 @@
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#include "dbg_report.h"
 #include "fractal.h"
 #include "aggreg.h"
 #include "autoscale.h"
 #include "opt_lyra.h"
-#include "transform.h"
 #include "garbage_coll.h"
-#include "logtxt.h"
 #include "windy.h"
-#include <algorithm>
 #include <cassert>
-#include <exception>
 #include <iostream>
-#include <memory>
-#include <vector>
-#include <array>
+#include <optional>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -55,7 +48,7 @@ int main(int argc, const char** argv)
     std::string windowName {cFrac::ProgramName};
     if (options.optDemo) windowName = cFrac::DemoProgramName;
 
-    sf::RenderWindow window(sf::VideoMode(cFrac::WindowXsize, cFrac::WindowYsize), 
+    sf::RenderWindow window(sf::VideoMode({cFrac::WindowXsize, cFrac::WindowYsize}), 
                             windowName);
 
     // First fractal element (order 0)
@@ -64,31 +57,33 @@ int main(int argc, const char** argv)
 
     while (window.isOpen()) {
 
-      sf::Event event;
-      while (window.pollEvent(event)) {
-        switch (event.type) {
-          // Window button close
-          case sf::Event::Closed:
-            window.close();
-            break;
-          case sf::Event::KeyPressed:
+      while (const std::optional<sf::Event> event = window.pollEvent()) {
+        assert(event and "shall be non-empty event here");
+        // Window button close
+        if (event->is<sf::Event::Closed>()) {
+          window.close();
+          }
+        // Key pressed event
+        else if (const auto* keyEvent = event->getIf<sf::Event::KeyPressed>()) {
+          assert(keyEvent and "shall be non-empty keyEvent here");
           // Close on X and Escape
-            if ((event.key.code == sf::Keyboard::X) or
-                (event.key.code == sf::Keyboard::Escape)) {
-              window.close();
-            } else {
-              if ((event.key.code == sf::Keyboard::R) or 
-                  (event.key.code == sf::Keyboard::F3)) {
-                // Reset
-                prim_element.initPrimary();
-                autoScale.resetAutoScale();
-              } // intentionaly lack of else, reset handling continued below
-              // Keys decodation dispatcher
-              fractMain.key_decodation(event.key.code, prim_element);
-            }
-            break;
-          default: 
-            break;
+          if ((keyEvent->code == sf::Keyboard::Key::Escape) or
+             (keyEvent->code == sf::Keyboard::Key::X)) {
+            window.close();
+          } else {
+            if ((keyEvent->code == sf::Keyboard::Key::R) or 
+                (keyEvent->code == sf::Keyboard::Key::F3)) {
+              // Reset
+              prim_element.initPrimary();
+              autoScale.resetAutoScale();
+            } // intentionaly lack of else, reset handling continued below
+            // Further Key decodation dispatcher
+            fractMain.key_decodation(keyEvent->code, prim_element);
+          }
+        }
+        else {
+          // Another event than window-close or keyboard, maybe mouse?
+          // Anyway igone!
         }
       }
 

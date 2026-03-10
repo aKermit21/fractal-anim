@@ -173,24 +173,24 @@ void ColorPal::calc_updown_color_pallet(bool up){
   for (size_t order {0}; order <= cFrac::NrOfOrders; ++order) { 
     temp = static_cast<unsigned int>(s_col_palet[order].begin_c.b * change_ratio);
     if (temp > 255) {temp=255;}
-    s_col_palet[order].begin_c.b = static_cast<sf::Uint8>(temp);
+    s_col_palet[order].begin_c.b = static_cast<std::uint8_t>(temp);
     temp = static_cast<unsigned int>(s_col_palet[order].end_c.b * change_ratio);
     if (temp > 255) {temp=255;}
-    s_col_palet[order].end_c.b = static_cast<sf::Uint8>(temp);
+    s_col_palet[order].end_c.b = static_cast<std::uint8_t>(temp);
     
     temp = static_cast<unsigned int>(s_col_palet[order].begin_c.r * change_ratio);
     if (temp > 255) {temp=255;}
-    s_col_palet[order].begin_c.r = static_cast<sf::Uint8>(temp);
+    s_col_palet[order].begin_c.r = static_cast<std::uint8_t>(temp);
     temp = static_cast<unsigned int>(s_col_palet[order].end_c.r * change_ratio);
     if (temp > 255) {temp=255;}
-    s_col_palet[order].end_c.r = static_cast<sf::Uint8>(temp);
+    s_col_palet[order].end_c.r = static_cast<std::uint8_t>(temp);
 
     temp = static_cast<unsigned int>(s_col_palet[order].begin_c.g * change_ratio);
     if (temp > 255) {temp=255;}
-    s_col_palet[order].begin_c.g = static_cast<sf::Uint8>(temp);
+    s_col_palet[order].begin_c.g = static_cast<std::uint8_t>(temp);
     temp = static_cast<unsigned int>(s_col_palet[order].end_c.g * change_ratio);
     if (temp > 255) {temp=255;}
-    s_col_palet[order].end_c.g = static_cast<sf::Uint8>(temp);
+    s_col_palet[order].end_c.g = static_cast<std::uint8_t>(temp);
   }
 }
   
@@ -203,7 +203,7 @@ void ColorPal::calc_flash_color_pallet(sf::Color act_light_color) {
   const unsigned int FLASH_COLOR_PLUS = 70; 
 
   // First Base Color
-  const sf::Uint32 BASE_COLOR_MASK = 0x00FF; // First base color is actually FF00
+  const std::uint32_t BASE_COLOR_MASK = 0x00FF; // First base color is actually FF00
   // Go to Next Color
   const unsigned int NEXT_COLOR_SHIFT = 8;
 
@@ -217,7 +217,7 @@ void ColorPal::calc_flash_color_pallet(sf::Color act_light_color) {
     s_flash_col_palet[order].end_c = s_col_palet[order].end_c;
 
     // Base colors iteration
-    sf::Uint32 col_mask = BASE_COLOR_MASK;
+    std::uint32_t col_mask = BASE_COLOR_MASK;
     unsigned int color_shift = 0;
     for (size_t base_col {0}; base_col < 3; ++base_col) {
 
@@ -280,33 +280,33 @@ void ColorPal::calc_flash_color_pallet(sf::Color act_light_color) {
 // change or rotate palette from keyboard
 bool ColorPal::key_decodation(sf::Keyboard::Key key) {
   // Precalculated Colors Palletes rotation
-  if (key == sf::Keyboard::K) {
+  if (key == sf::Keyboard::Key::K) {
     rotate_fix_color_pallet();
     // Prepare flash (flare-up) color pallete based on current one
     calc_flash_color_pallet(LightS::s_lightColor);
     return true; // key found
   }
-  if (key == sf::Keyboard::I) {
+  if (key == sf::Keyboard::Key::I) {
     generate_rnd_color_pallet();
     // Prepare flash (flare-up) color pallete based on current one
     calc_flash_color_pallet(LightS::s_lightColor);
     return true; // key found
   }
-  if (key == sf::Keyboard::J) {
+  if (key == sf::Keyboard::Key::J) {
     // Dimm colors
     calc_updown_color_pallet(false);
     // update flash color pallet
     calc_flash_color_pallet(LightS::s_lightColor);
     return true; // key found
   }
-  if (key == sf::Keyboard::U) {
+  if (key == sf::Keyboard::Key::U) {
     // Reinforce colors
     calc_updown_color_pallet(true);
     // update flash color pallet
     calc_flash_color_pallet(LightS::s_lightColor);
     return true; // key found
   }
-  if (key == sf::Keyboard::H) {
+  if (key == sf::Keyboard::Key::H) {
     // Switch on global flash flag; 
     // it will be off at one_step_cfg_change (after single frame)
     s_global_flash = true;
