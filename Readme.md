@@ -19,7 +19,7 @@ Since both the light source (which can move and change color) and the fractal le
 ![fractal leaf example](doc/fractal_ex2.png "Fractal Leaf example")
 ![fractal leaf example](doc/fractal_ex3.png "Fractal Leaf example")
 ## Dependencies
-- SFML (https://www.sfml-dev.org/) - to be installed manually before;
+- SFML 3.0 (https://www.sfml-dev.org/) - to be installed manually before;
 - lyra (c++ arg parser) - embedded as subproject (see https://github.com/bfgroup/Lyra for source).
 ## Installation
 Clone GitHub project
