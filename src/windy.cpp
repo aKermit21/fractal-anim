@@ -9,10 +9,8 @@
 
 #include "windy.h"
 #include "animation.h"
-#include "dbg_report.h"
 #include "fractal.h"
 #include "transform.h"
-#include <cmath>
 #include <cstdlib>
 
 // animation related keys handling

@@ -12,7 +12,6 @@
 #include "dbg_report.h"
 #include "fractal.h"
 #include <iostream>
-#include <cstdlib>
 
 OptParams optParse(int argc, const char** argv)
 {

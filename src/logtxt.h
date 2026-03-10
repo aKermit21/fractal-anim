@@ -14,11 +14,8 @@
 #include "opt_lyra.h"
 #include "text_draw.h"
 #include "cfg_toml.h"
-#include "windy.h"
-#include <cstdlib>
 #include <string>
 #include <fstream>
-#include <filesystem>
 #include <string_view>
 
 // Logfile and Text Printing

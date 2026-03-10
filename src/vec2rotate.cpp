@@ -14,7 +14,6 @@
 #include <array>
 #include <cmath>
 #include <iterator>
-#include <utility>
 #include <assert.h>
 
 constexpr static int cPromile { 1000 };

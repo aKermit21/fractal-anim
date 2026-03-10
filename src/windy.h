@@ -11,7 +11,6 @@
 
 #include "fractal.h"
 #include "animation.h"
-#include <array>
 
 // Modification of Transformation Algorithm 
 // by adding wiggling effect (like from wind) to angle component

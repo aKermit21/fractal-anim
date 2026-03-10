@@ -16,7 +16,6 @@
 #include "transform.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Keyboard.hpp>
-#include <cmath>
 #include <filesystem>
 #include <fstream>
 #include <stdlib.h>

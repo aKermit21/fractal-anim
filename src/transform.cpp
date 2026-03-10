@@ -9,11 +9,8 @@
 
 #include "transform.h"
 #include "dbg_report.h"
-#include "animation.h"
 #include "fractal.h"
-#include "windy.h"
 #include <SFML/Window/Keyboard.hpp>
-#include <cmath>
 #include <cstdlib>
 #include <sstream>
 #include <assert.h>

@@ -11,8 +11,6 @@
 
 #include "lyra/lyra.hpp"
 #include "config.h"
-#include <cstdlib>
-#include <iostream>
 
 
 struct OptParams {

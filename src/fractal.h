@@ -10,8 +10,6 @@
 #pragma once
 
 #include <array>
-#include <iterator>
-#include <memory>
 #include "config.h"
 #include <SFML/Graphics.hpp>
 
