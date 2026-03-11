@@ -15,10 +15,10 @@ Key Functions
 <PageDown>         Speed Down, more details
 
      L    LightS   Light on/off toggle
-     W             Light color rotation
-     S             rotation reversed
-     A             left smooth movement
-     D             right smooth movement
+     ↑Up or W      Light color rotation
+     ↓Down or S    rotation reversed
+     ←Left or A    left smooth movement
+     →Right or D   right smooth movement
      Q             left jump movement
      E             right jump movement
      G             Switch mode of Grid rays visualisation: off, on, on move.

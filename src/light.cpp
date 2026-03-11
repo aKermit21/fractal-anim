@@ -42,11 +42,13 @@ LightS::RetResult LightS::key_decodation(sf::Keyboard::Key key){
       s_lightActive = true;
     }
   }
-  else if (key == sf::Keyboard::Key::W) {
+  else if ((key == sf::Keyboard::Key::W) or
+           (key == sf::Keyboard::Key::Up)) {
     rotate_rgb_color_updown(rotateUpColor);
     retResult.colorChanged = true;
   }
-  else if (key == sf::Keyboard::Key::S) {
+  else if ((key == sf::Keyboard::Key::S) or
+           (key == sf::Keyboard::Key::Down)) {
     rotate_rgb_color_updown(rotateDownColor);
     retResult.colorChanged = true;
   } 
@@ -60,7 +62,8 @@ LightS::RetResult LightS::key_decodation(sf::Keyboard::Key key){
     //TODO: Switch off temporary light
     retResult.lightMoved = true;
   }
-  else if ((key == sf::Keyboard::Key::A) or (key == sf::Keyboard::Key::D)) {
+  else if ((key == sf::Keyboard::Key::A) or (key == sf::Keyboard::Key::D) or
+           ((key == sf::Keyboard::Key::Left) or (key == sf::Keyboard::Key::Right))) {
     // Light smooth moving realized by light_draw()
     retResult.lightMoved = true;
   }
@@ -86,10 +89,12 @@ void LightS::light_draw(sf::RenderWindow &win){
   
   // Move realization
   // Reposition smoothly light while key is being pressed or if demo
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+  if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) or 
+      (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))) {
     move_light_position_by(cMoveSmooth);   // to right
     m_lightMoving = rightMove;
-  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
+  } else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) or
+            (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))) {
     move_light_position_by(-cMoveSmooth);  // to left
     m_lightMoving = leftMove;
   } else {
