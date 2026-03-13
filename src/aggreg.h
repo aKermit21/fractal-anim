@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Robert Gajewski
+// Copyright (c) 2025-2026 Robert Gajewski
 // (MIT License)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -17,9 +17,6 @@
 #include "logtxt.h"
 #include "opt_lyra.h"
 #include "windy.h"
-#include <cstdlib>
-#include <filesystem>
-#include <fstream>
 #include <string>
 
 // Main program aggregate (collection of) structs
@@ -57,6 +54,8 @@ struct MainProgAggr {
   // aggregate of Structs/classes
   LogText logtxt;     // Text, Logging snapshots
   MovWind movWind;   // animation: open, close, wind
+  //TODO: Add growing data similar to T_Algo_Arr/Drec but only
+  // struct keep Growing float 0..1 (0-100%) till final length
   ColorPal colorPal; // color palette
   LightS lightS;     // light source
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Robert Gajewski
+// Copyright (c) 2025-2026 Robert Gajewski
 // (MIT License)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -43,7 +43,7 @@ bool new_elements_creation(Element * const parent_ptr, const short level)
   auto u_ptr_down_temp { std::make_unique<std::array<Element, cFrac::NrOfElements>>() };
   parent_ptr->children_down = u_ptr_down_temp.get(); // ordinary ptr to a structure
   // Move Unique Ptr ownership to dedicated (garbage) Collection
-  MemAndDebug::collect_u_ptr(move(u_ptr_down_temp));
+  MemAndDebug::collect_u_ptr(std::move(u_ptr_down_temp));
   Dbg::count_elements(cFrac::NrOfElements);
   short ind;
   ind = 0;
@@ -59,7 +59,7 @@ bool new_elements_creation(Element * const parent_ptr, const short level)
   auto&& ptr_up_temp = std::make_unique<std::array<Element, cFrac::NrOfElements>>();
   parent_ptr->children_up = ptr_up_temp.get();  // ordinary ptr to a structure
   // Move Unique Ptr ownership to dedicated (garbage) Collection
-  MemAndDebug::collect_u_ptr(move(ptr_up_temp));
+  MemAndDebug::collect_u_ptr(std::move(ptr_up_temp));
   Dbg::count_elements(cFrac::NrOfElements);
   ind = 0;
   for(auto it = parent_ptr->children_up->begin(); it != parent_ptr->children_up->end(); ++it ) {
