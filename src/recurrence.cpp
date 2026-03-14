@@ -100,7 +100,7 @@ bool recurance_elements_redraw(Element * const parent_ptr, const short level,
     // Warn if too much elemnts drawed per cycle
     if (recur_funct_cnt >= Dbg::cDrawWarningThreshold) {
       Dbg::report_mltpl_warning(Dbg::mltplElementsDraw, recur_funct_cnt);
-      return false;
+      // return false; // with active return object drawing is aborted
     }
   }
 
