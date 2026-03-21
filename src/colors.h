@@ -25,6 +25,8 @@ struct StemColor {
 };
 
 // Colors for 0-NrOfrders stems
+// 0th order is primary element, following are counted:
+//  1..NrOfOrders; thus '+1'
 using T_Col_Palet = std::array<StemColor, cFrac::NrOfOrders +1>;
 
 struct ColorPal {

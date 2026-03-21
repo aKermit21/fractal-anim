@@ -12,6 +12,7 @@
 #include <array>
 #include "config.h"
 #include <SFML/Graphics.hpp>
+#include <optional>
 
 // Basic CONFIG Constants
 namespace cFrac {
@@ -22,8 +23,7 @@ namespace cFrac {
   inline constexpr int NrOfElements { 5 }; // number of elements in one child branch  
   // if > 5, consider extending definition of "Transformation Data" in transform.h
 
-  // maximal possible nesting, down generations, counting from 0 (primary) to 7
-  // TODO: Add NrOfColorOrders { 7-8 }
+  // maximal possible nesting, down generations, counting from 0 (primary) to 8
   inline constexpr int NrOfOrders { 8 }; 
   // can be problematic to increase
 
@@ -40,6 +40,9 @@ namespace cFrac {
   
   // counter mark demo initialization
   inline constexpr int DemoInitCnt { 1 };
+
+  // Minimal time per frame drawing in ms
+  inline constexpr double MinTimePerFrame { 15.0 }; // 67Hz
 }
 
 enum BranchType { upBranch, downBranch, firstBranch };
@@ -47,6 +50,7 @@ enum LightAngleCase {lAngleUnknown = 0, lAngleAbove90, lAngleBelow90};
 
 // other Config Constants in tranform.h
 
+// Types used throughout project
 
 // 2D vector and its current position - x1,y1 -> x2,y2 aka x,y dx,dy
 // Warning: values are initially populated (overwritten) 
@@ -56,6 +60,11 @@ struct Vec2D {
   int y;
   int dx;
   int dy;
+  // Original dx/dy used as base for Initial Growing transformation
+  // used only for primary element recalculation
+  // Can be optimize do use `original(s)` only in Primary Element
+  int originalDx;
+  int originalDy;
   // move along x,y and x+dx,y+dy line in promile of original line
   // affects x,y - shall be done before rotation
   void reposition(const int promile);
@@ -111,6 +120,10 @@ private:
   LightAngleCase light_vec_angle(int vx, int vy);
 };
 
+struct FluctuateState {
+  bool windActive;
+  bool growingActive;
+};
 
 // Common transformation basics - see tranform.h
 // live transformation version used for calculations
@@ -131,13 +144,18 @@ struct DRecSymm {
 using T_Algo_Arr = std::array<DRec, cFrac::NrOfElements>;
 using T_Algo_Arr_Symm = std::array<DRecSymm, cFrac::NrOfElements>;
 
-// More general algo - each level has diffrent angle
-using T_Wind_Algo_Arr = std::array<T_Algo_Arr, cFrac::NrOfOrders>;
+// More specifc rules enabling additional fluctuaction imposed
+// on top of basic Algo defined above.
+// Each level has diffrent angle for wind/wobble
+// or modified scale for progressive growing.
+// 0th order is primary element, then following orders 1..NrOfOrders - thus +1
+using T_Fluctuate_Algo_Arr = std::array<T_Algo_Arr, cFrac::NrOfOrders +1>;
 
 /* Single Element of Fractal */
 struct Element {
   short order { 0 }; // nesting level
   short index {};     // position within current branch - 1..cTran::NrOfElements
+  // std::optional<DRec> exceptionalRule {std::nullopt};
   BranchType b_type = firstBranch; // First branch valid only for first element
   // vetor / delta coordinates / stem thickness / Flash Light
   StemFlash stem_xy;   
@@ -149,9 +167,7 @@ struct Element {
   Element *parent_ptr = {}; // pointer to previous already existing object
   // Tranform vec/stem from parent using special transformation array
   // - method for static (single frame) drawing
-  void transform_vec_stem(T_Algo_Arr const & algo_data,
-                          T_Wind_Algo_Arr const & algo_wind_data,
-                          const bool windEffect); 
+  void transform_vec_stem(const T_Fluctuate_Algo_Arr & algo_fluct_data);
   void initPrimary();   // Init data for first element 
 };
 

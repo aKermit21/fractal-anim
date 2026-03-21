@@ -48,14 +48,17 @@ struct Dbg
   // write (optional) info when at run time
   constexpr static bool cReportError { true };
   constexpr static bool cReportWarning { true };
+  
   #ifdef NDEBUG
   // Release make
-  constexpr static bool cReportInfo { false }; // timing, info - non recursive
+  constexpr static bool cReportInfo { false }; // timing, info - non recursive (once per frame)
   #else
   // Development
   constexpr static bool cReportInfo { true }; // timing, info - non recursive
   #endif
-  constexpr static bool cReportTrace { false }; // Debug, trace, possible recursive info
+
+  // Deep debug option to be manually on
+  constexpr static bool cReportTrace { false }; // Debug, trace, possible recursive info (multiple per frame)
 
   // Start multiple warnings thresholds
   // Too much elements created
@@ -66,6 +69,7 @@ struct Dbg
   constexpr static long cDrawWarningThreshold { 5'000'000 };
 
   enum MultipleWarning { mltplElementsCreate, mltplElementsDraw, mltplPointers };
+  enum InfoMsgByType { infoTypeElementsDrawnPerCycle, infoTypeTimePerFrame };
 
   static void count_elements(int i);
   static void demo_frames(long int i);
@@ -74,6 +78,9 @@ struct Dbg
   //special multiple_warning (x2 formula)
   static void report_mltpl_warning(MultipleWarning mwtype, long int i);
   static void report_info(std::string_view s, std::optional<long> i = std::nullopt);
+
+  // Below enable smart Info display removing redundant text
+  static void report_info_by_type( InfoMsgByType type, long i = 0);
   static void report_trace(std::string_view s, std::optional<long> i = std::nullopt);
   static void find_minmax(const VecMinMax minmaxVec);
   static void report_summary(void) noexcept;
@@ -89,6 +96,8 @@ struct Dbg
   // Maximum expected fractal size in points
   // for calculating min/max
   constexpr static int cSizeBeyondMax { 10000 };
+
+  static bool isWithinTenPercent(long previous, long current);
 
   // Counters
   static int error_cnt;

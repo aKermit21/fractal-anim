@@ -26,6 +26,9 @@ void Element::initPrimary() {
   stem_xy.vec_xy.y = cFrac::PrimStartY * cTran::AccurMltp; 
   stem_xy.vec_xy.dx = cFrac::PrimVecX * cTran::AccurMltp; 
   stem_xy.vec_xy.dy = cFrac::PrimVecY * cTran::AccurMltp; 
+  // Make a copy of dx and dy
+  stem_xy.vec_xy.originalDx = cFrac::PrimVecX * cTran::AccurMltp; 
+  stem_xy.vec_xy.originalDy = cFrac::PrimVecY * cTran::AccurMltp; 
   // stem width
   stem_xy.x1 = stem_xy.vec_xy.x;
   stem_xy.x2 = stem_xy.vec_xy.x;
@@ -38,17 +41,21 @@ void Element::initPrimary() {
 
 // Tranform parent vector (also stem data) to the child one 
 // considering index and branch type
-void Element::transform_vec_stem(const T_Algo_Arr &algo_data, 
-                          T_Wind_Algo_Arr const & algo_wind_data,
-                          const bool windActive) { 
+void Element::transform_vec_stem(const T_Fluctuate_Algo_Arr & algo_fluct_data) { 
   
   int promile; // reposition begining of stem along parent line (in promile)
   int angle;   // rotation
   float scale; // diminishing
   
-  // Do not transform primary object
-  if (order > 0) {
-    // Transformation depends on index
+  // Only (possible) special limited transformation of primary object
+  if (order == 0) {
+    // Dbg::report_info("Primary element tranformation" );
+    stem_xy.vec_xy.dx =
+      algo_fluct_data[0][0].scale * stem_xy.vec_xy.originalDx;
+    stem_xy.vec_xy.dy =
+      algo_fluct_data[0][0].scale * stem_xy.vec_xy.originalDy;
+  } else  {
+    // Transformation depends on index (element #)
     // but our branch index has range 1..cFrac::NrOfElements
     auto arr_index = index -1;
     if (arr_index < 0) {
@@ -56,22 +63,14 @@ void Element::transform_vec_stem(const T_Algo_Arr &algo_data,
       Dbg::report_error("Branch Index out of range: ", index);
       promile = 0; angle = 0; scale = 1.0;
     } else {
-      promile = algo_data.at(arr_index).repos; 
-      scale = algo_data.at(arr_index).scale;
+      promile = algo_fluct_data.at(order).at(arr_index).repos; 
       if (b_type == upBranch) {
-        if (!windActive or (order >= cFrac::NrOfOrders)) {
-          angle = algo_data.at(arr_index).angle;
-        } else {
-          angle = algo_wind_data.at(order-1).at(arr_index).angle;
-        }
+          angle = algo_fluct_data.at(order).at(arr_index).angle;
+          scale = algo_fluct_data.at(order).at(arr_index).scale;
       }
       else {
-        // Down Branch
-        if (!windActive or (order >= cFrac::NrOfOrders)) {
-          angle = algo_data.at(arr_index).angle_down;
-        } else {
-          angle = algo_wind_data.at(order-1).at(arr_index).angle_down;
-        }
+          angle = algo_fluct_data.at(order).at(arr_index).angle_down;
+          scale = algo_fluct_data.at(order).at(arr_index).scale;
         // For symmetrical
         //   angle = -angle; // reverse angle
       }

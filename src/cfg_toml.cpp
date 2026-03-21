@@ -278,11 +278,13 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   tmpint = thisConfig["primary"]["dx"].value<int>();
   if (!tmpint) return false;
   tmp_prim.stem_xy.vec_xy.dx = *tmpint * cTran::AccurMltp;
+  tmp_prim.stem_xy.vec_xy.originalDx = tmp_prim.stem_xy.vec_xy.dx;
   
   if (!thisConfig["primary"]["dy"].is_integer()) return false;
   tmpint = thisConfig["primary"]["dy"].value<int>();
   if (!tmpint) return false;
   tmp_prim.stem_xy.vec_xy.dy = *tmpint * cTran::AccurMltp;
+  tmp_prim.stem_xy.vec_xy.originalDy = tmp_prim.stem_xy.vec_xy.dy;
   
   // if (!thisConfig["primary"]["width"].is_number()) return false;
   // auto tmpwidth = thisConfig["primary"]["width"].value<float>();

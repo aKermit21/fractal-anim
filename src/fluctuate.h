@@ -13,50 +13,53 @@
 #include "animation.h"
 
 // Modification of Transformation Algorithm 
-// by adding wiggling effect (like from wind) to angle component
+// by adding wiggling effect (like from wind) to angle component or
+// by adding growing effect to scale component
 
-struct MovWind : MovAnim {
+struct MovFluctuate : MovAnim {
 
-  MovWind(int speed=10) 
+  MovFluctuate(int speed=10) 
     : MovAnim{ speed }
+    , fluctuateState {false, true}
+    , growingDynamic {0} // all zero's except first element - see next lines of code
   { 
-    Dbg::report_info("Init: TrWindy (speed=)", speed); 
-    wind_anim_state = false;
-    original_algo_data = algo_data;
+    Dbg::report_info("Init: MovFluctuate (speed=)", speed); 
+    //TODO: Make this latter configurable by CLI option
+    // fluctuateState.growing_anim_state = true; 
+    // copy Algo per level
+    algo_data_fluctuate = conv_to_fluctuate(algo_data);
+    // Growing primary size starts from non-zero
+    growingDynamic[0] = 3; 
+    // Initialize algo_data_fluctuate table for growin before first display
+    if (fluctuateState.growingActive) {
+      oneStepGrowingChange();
+    }
   }
-
-  // More general algo - each level has diffrent angle
-  // using T_Wind_Algo_Arr = std::array<T_Algo_Arr, cFrac::NrOfOrders>;
   
-  // struct WindRec {
-  //   bool started_up; // this is to start diffrent branches on diffrent time
-  //   unsigned int modif_index_up; // indexing (rolling through) sinus table
-  //   // The same for down branches
-  //   bool started_down; 
-  //   unsigned int modif_index_down; 
-  // };
-
+  // Two possible fluctuation animations: shaking and (initial) growing
+  // See FluctuateState defined in fractal.h
+  FluctuateState fluctuateState;
+  
   // animation related keys handling
   bool key_decodation(sf::Keyboard::Key key);
 
   // called once in a display loop
-  // to realize animation
+  // to realize fluctuation animation
   void one_step_cfg_change();
-
+  
   void stop_wind();
 
-  bool wind_anim_state;
-  
-  // Transformation full algorithm data including windy effect
+  // Transformation full LIVE algorithm data including windy, growing effect
   // More specific algo: per level
-  // TODO: Use this at re-draw
-  T_Wind_Algo_Arr algo_data_wind;
+  T_Fluctuate_Algo_Arr algo_data_fluctuate;
+
+  T_Fluctuate_Algo_Arr conv_to_fluctuate(T_Algo_Arr);
 
 private:
-
-  T_Wind_Algo_Arr conv_to_wind(T_Algo_Arr);
   
-  // Unmodified (by wind algo) transformation data
-  T_Algo_Arr original_algo_data;
+  // realize growing specific fluctuation change
+  void oneStepGrowingChange();
 
+  // Specifig growing dynamic (x0.1)
+  std::array<int, cFrac::NrOfOrders+1> growingDynamic;
 };

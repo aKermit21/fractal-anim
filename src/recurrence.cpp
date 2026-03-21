@@ -12,9 +12,10 @@
 #include "dbg_report.h"
 #include "garbage_coll.h"
 #include "transform.h"
-#include "windy.h"
+#include "fluctuate.h"
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <chrono>
+#include <thread>
 
 // Allocate subordinate elements/branches
 // and initialize with structural data
@@ -76,7 +77,8 @@ bool new_elements_creation(Element * const parent_ptr, const short level)
 
 
 bool recurance_elements_redraw(Element * const parent_ptr, const short level, 
-           sf::RenderWindow &win, const MovWind &algo_anim, AutoScale & autoscale)
+           sf::RenderWindow &win, const MovFluctuate &algo_anim,
+           AutoScale & autoscale)
 {
   static long recur_funct_cnt { 0 };
 
@@ -86,15 +88,28 @@ bool recurance_elements_redraw(Element * const parent_ptr, const short level,
     static auto prev_time = std::chrono::high_resolution_clock::now();
     
     if (level == 0) {
-      Dbg::report_info("Elements Drawn per cycle: ", recur_funct_cnt);
+      // Possible actions per every cycle
+
+      // Smart report - Show # elemnts drawn per cycle if value is >10% change from previous
+      Dbg::report_info_by_type(Dbg::infoTypeElementsDrawnPerCycle, recur_funct_cnt); //report o
       recur_funct_cnt = 0; // reset recurrance counter so it will count per cycle
 
       // time between frames
       auto next_time = std::chrono::high_resolution_clock::now();
       double elapsed_time_ms = 
         std::chrono::duration<double, std::milli>(next_time - prev_time).count();
-      Dbg::report_info("Time per frame (ms): ", elapsed_time_ms);
-      prev_time = next_time;
+      // Smart report - time perf frame in ms if value is >10% change from previous
+      Dbg::report_info_by_type(Dbg::infoTypeTimePerFrame, elapsed_time_ms);
+
+      // Ensure minimal time between consecutive frame drawing
+      long correctionTime { 0 };
+      if (elapsed_time_ms < cFrac::MinTimePerFrame) {
+        correctionTime = cFrac::MinTimePerFrame - elapsed_time_ms;
+        std::this_thread::sleep_for(std::chrono::milliseconds(correctionTime));
+      }
+      // Omit obove delay for inter frame time calculation
+      prev_time = std::chrono::high_resolution_clock::now();
+    
     } else { ++recur_funct_cnt; }
 
     // Warn if too much elemnts drawed per cycle
@@ -102,21 +117,18 @@ bool recurance_elements_redraw(Element * const parent_ptr, const short level,
       Dbg::report_mltpl_warning(Dbg::mltplElementsDraw, recur_funct_cnt);
       // return false; // with active return object drawing is aborted
     }
+
   }
 
-  if (level > 0) {  // level 0 does NOT undergo transformation
-    // Tranform this vector (base on settings copied from parent) to the new one 
-    parent_ptr->transform_vec_stem(algo_anim.algo_data,
-                                   algo_anim.algo_data_wind,
-                                   algo_anim.wind_anim_state);
-  }
+  // Tranform this vector (base on settings copied from parent) to the new one 
+  parent_ptr->transform_vec_stem(algo_anim.algo_data_fluctuate);
 
   autoscale.findMinMax(parent_ptr->stem_xy.vec_xy);
 
   // Draw the element
   parent_ptr->stem_xy.draw_stem(win, level, algo_anim.ifFreezeTimeStopActive());
 
-  if (level >= cFrac::NrOfOrders) { 
+  if (level > cFrac::NrOfOrders) { 
     return false; // no more branches to scan
   }
 

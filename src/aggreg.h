@@ -16,7 +16,7 @@
 #include "light.h"
 #include "logtxt.h"
 #include "opt_lyra.h"
-#include "windy.h"
+#include "fluctuate.h"
 #include <string>
 
 // Main program aggregate (collection of) structs
@@ -26,7 +26,7 @@
 struct MainProgAggr {
   explicit MainProgAggr(OptParams opts)
       : logtxt{opts}
-      , movWind{opts.optSpeed}
+      , movFluctuate{opts.optSpeed}
       , m_demoActive{opts.optDemo} 
   {
     Dbg::report_info("Init: MainProgAggr (demo=) ", opts.optDemo);
@@ -53,9 +53,7 @@ struct MainProgAggr {
 
   // aggregate of Structs/classes
   LogText logtxt;     // Text, Logging snapshots
-  MovWind movWind;   // animation: open, close, wind
-  //TODO: Add growing data similar to T_Algo_Arr/Drec but only
-  // struct keep Growing float 0..1 (0-100%) till final length
+  MovFluctuate movFluctuate;   // animation: open, close, wind, growing
   ColorPal colorPal; // color palette
   LightS lightS;     // light source
 

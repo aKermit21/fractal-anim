@@ -74,11 +74,14 @@ struct MovAnim : TranAlg {
 
   // end of Closing animation
   bool stopAtZero;
-  
-  private:
+
+  protected:
     
   // Angle Movement animation state
   AngleAnimState angle_anim_state;
+  
+  private:
+    
   // Resize animation state
   ResizeAnimState resize_anim_state;
 

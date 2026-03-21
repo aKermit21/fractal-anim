@@ -21,7 +21,7 @@ my_src = [
  'src/transform.cpp',
  'src/vec2angle.cpp',
  'src/vec2rotate.cpp',
- 'src/windy.cpp']
+ 'src/fluctuate.cpp']
 
 # Configuration constant/string
 conf_data = configuration_data()

@@ -9,6 +9,7 @@
 
 #include "fractal.h"
 #include "light.h"
+#include "transform.h"
 
 // Angle maths on vectors
 
@@ -28,6 +29,12 @@
 LightAngleCase StemFlash::light_vec_angle(int vx, int vy) {
   long int dot_product;
 
+  // If vector size is too small (single drawing point) assume AngleUnknown
+  constexpr int cTooSmall = cTran::AccurMltp;
+  if ((abs(vx) < cTooSmall) and (abs(vy) < cTooSmall)) {
+    return lAngleUnknown;
+  }
+  
   // take dot product between light vector and fractal (stem) vector
   dot_product = (LightS::s_lightVec.x * static_cast<long int>(vx)) + 
                 (LightS::s_lightVec.y * static_cast<long int>(vy));

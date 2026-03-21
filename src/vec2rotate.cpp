@@ -95,6 +95,9 @@ void Stem::shrinkStemCenter(float factor, float cumulativeFactor,
   
   vec_xy.dx *= factor; 
   vec_xy.dy *= factor;
+  // Copy used for primary element possible 'growing' transformation
+  vec_xy.originalDx = vec_xy.dx; 
+  vec_xy.originalDy = vec_xy.dy;
 
   // Calculate coordinates of stem taking given width
   recalculateStemWidthCoordinates(cumulativeFactor);

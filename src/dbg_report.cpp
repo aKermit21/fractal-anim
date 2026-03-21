@@ -50,8 +50,8 @@ void Dbg::report_trace(std::string_view s, std::optional<long> i) {
     }
     std::cerr << '\n';
     
+  ++info_cnt; // optionally count also trace (deep debug)
   }
-  ++info_cnt; 
 }
 
 void Dbg::report_warning(std::string_view s, std::optional<long> i) {
@@ -106,6 +106,56 @@ void Dbg::report_mltpl_warning(Dbg::MultipleWarning mwtype, long int counter) {
     }
   }
   
+}
+
+void Dbg::report_info_by_type( InfoMsgByType type, long current) {
+  // lates data
+  static long ibtDrawnPrevious {};
+  static long ibtTimePrevious {};
+
+
+  if (infoTypeElementsDrawnPerCycle == type) {
+    static long theSameCounter {};
+    if (Dbg::isWithinTenPercent(ibtDrawnPrevious, current)) {
+      ++theSameCounter;
+      if (cReportInfo and (theSameCounter < 2)) {
+        std::cerr << "        ... \n";
+      }
+    } else {
+      // Really diffrent value
+      ibtDrawnPrevious = current;
+      theSameCounter = 0;
+      report_info("Elements Drawn per cycle: ", current); 
+    }
+  }
+  else if (infoTypeTimePerFrame == type) {
+    static long theSameCounter {};
+    if (Dbg::isWithinTenPercent(ibtTimePrevious, current)) {
+      ++theSameCounter;
+      if (cReportInfo and (theSameCounter < 2)) {
+        std::cerr << "        ... \n";
+      }
+    } else {
+      // Really diffrent value
+      ibtTimePrevious = current;
+      theSameCounter = 0;
+      report_info("Time per frame (ms): ", current); 
+    }
+  } else {
+    assert(false and "Unexpected else");
+  }
+    
+}
+
+bool Dbg::isWithinTenPercent(long previous, long current) {
+    if (previous == 0) {
+        // Handle zero case 
+        // Consider any non-zero as out of range
+        return current == 0;
+    }
+    
+    float percentChange = static_cast<float>(current - previous) / std::abs(previous);
+    return std::abs(percentChange) <= 0.10;  // 10% = 0.10
 }
   
 void Dbg::count_elements(int i) {

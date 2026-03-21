@@ -14,6 +14,7 @@
 #include "fractal.h"
 #include "light.h"
 #include "demo_func.h"
+#include "fluctuate.h"
 #include <SFML/Window/Keyboard.hpp>
 #include <sstream>
 #include <string>
@@ -33,7 +34,7 @@ void MainProgAggr::postInitSync() {
 
 // One step per display loop - to be disapthed to subordinate classes/struct
 void MainProgAggr::one_step_cfg_change() {
-  movWind.one_step_cfg_change();
+  movFluctuate.one_step_cfg_change();
   colorPal.one_step_flash_reset();  
   lightS.one_step_light_resume();
 }
@@ -44,19 +45,19 @@ std::string MainProgAggr::prepareSnapshotData(void) {
 
   // Takes snpashot data from base classes
   ss << colorPal.log_rnd_color_pallet() << '\n';
-  ss << movWind.log_trans_config() << '\n';
+  ss << movFluctuate.log_trans_config() << '\n';
   return ss.str();
 }
   
 void MainProgAggr::resetConfig(bool keyAction) {
   // Stop both types of animation
-  movWind.stopAnimation(); // close/open animation
-  movWind.stop_wind();
-  movWind.stopAtZero = false;
+  movFluctuate.stopAnimation(); // close/open animation
+  movFluctuate.stop_wind();
+  movFluctuate.stopAtZero = false;
   // if done by keyboard
   if (keyAction) { 
     // Set to one of pre-calculated configuration
-    movWind.reset_pre_cfg(); // algo_data = default
+    movFluctuate.reset_pre_cfg(); // algo_data = default
     // Reset (current) color to nullify dimm efect 
     colorPal.reset_cur_color_pallet();
     // Reset light position
@@ -66,7 +67,7 @@ void MainProgAggr::resetConfig(bool keyAction) {
   colorPal.calc_flash_color_pallet(LightS::s_lightColor);
   colorPal.reset_flash_algo();
   // resume time flow (temporary flash ligth effect) - if stopped
-  movWind.resumeTimeFlow();
+  movFluctuate.resumeTimeFlow();
 }
   
 // (Re)Draw some possible artefacts on top of fractal structure
@@ -84,7 +85,7 @@ void MainProgAggr::draw_artefacts(sf::RenderWindow & win, AutoScale & rescale) {
   logtxt.help_draw(win);
   
   // Draw Speed if requested
-  auto speed = movWind.get_speedScale();
+  auto speed = movFluctuate.get_speedScale();
   logtxt.speed_draw(win, speed);
   
   // Welcome Draw at the beginning
@@ -105,9 +106,9 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
                                   Element& prim_element) {
   if (key == sf::Keyboard::Key::Space) {
     // Stop both types of animation
-    if (m_demoActive) { movWind.stopAnimation(); }
-    else { movWind.stopFreezeAnimation(); }// Freeze time or permanent Stop
-    movWind.stop_wind();
+    if (m_demoActive) { movFluctuate.stopAnimation(); }
+    else { movFluctuate.stopFreezeAnimation(); }// Freeze time or permanent Stop
+    movFluctuate.stop_wind();
     // print current speed scale for # of frames
     logtxt.startSpeedDraw();
   }
@@ -126,34 +127,36 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
   } 
   else if (key == sf::Keyboard::Key::F3) {
     // Retrieve fractal snapshot/configuration from file
-    logtxt.load_next_snapshot( prim_element, movWind.algo_data, ColorPal::s_col_palet);
+    logtxt.load_next_snapshot( prim_element, movFluctuate.algo_data, ColorPal::s_col_palet);
     // Refresh also flash color pallete
     colorPal.calc_flash_color_pallet(LightS::s_lightColor);
+    // Refresh final transformation algo
+    movFluctuate.algo_data_fluctuate = movFluctuate.conv_to_fluctuate(movFluctuate.algo_data);
     // In case of change of leaf contruction reset flash
     colorPal.reset_flash_algo();
-    movWind.resumeTimeFlow();
+    movFluctuate.resumeTimeFlow();
     // Allow display snapshot description (or time)
     logtxt.startSnapshotDraw();
   } 
   else if (key == sf::Keyboard::Key::PageUp) {
     // Increase size thus speed
-    movWind.speedIncrement();
+    movFluctuate.speedIncrement();
     // draw speed scale for next xx frames
     logtxt.startSpeedDraw();
-    movWind.resumeTimeFlow();
+    movFluctuate.resumeTimeFlow();
   } 
   else if (key == sf::Keyboard::Key::PageDown) {
     // Decrease size thus speed
-    movWind.speedDecrement();
+    movFluctuate.speedDecrement();
     // draw speed scale for next xx frames
     logtxt.startSpeedDraw();
-    movWind.resumeTimeFlow();
+    movFluctuate.resumeTimeFlow();
   } 
   else {
     if ((key == sf::Keyboard::Key::P) or (key == sf::Keyboard::Key::Grave)) {
       // Additional global action in some cases
       colorPal.reset_flash_algo();
-      movWind.resumeTimeFlow();
+      movFluctuate.resumeTimeFlow();
     }
     // Scan for subordinate classes key actiions 
     bool keyFound = false;
@@ -161,10 +164,10 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
     keyFound |= colorPal.key_decodation(key);
     
     // possible animation move control
-    keyFound |= movWind.MovAnim::key_decodation(key);
+    keyFound |= movFluctuate.MovAnim::key_decodation(key);
     
-    // possible wind (wobbling) animation control
-    keyFound |= movWind.MovWind::key_decodation(key);
+    // possible wind (wobbling) or growing animation control
+    keyFound |= movFluctuate.MovFluctuate::key_decodation(key);
     
     // possible Light control
     auto l_lightRet = lightS.key_decodation(key);
@@ -175,7 +178,7 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
     keyFound |= l_lightRet.lightMoved;
 
     // Key decodation successfull by some base functionality/class
-    if (keyFound) movWind.resumeTimeFlow();
+    if (keyFound) movFluctuate.resumeTimeFlow();
   }
   
 }
@@ -219,12 +222,12 @@ void MainProgAggr::demoGenerator(Element & primEl, AutoScale & autoScale) {
   bool actionDone = false;
 
   // Reset every about 500 frames
-  if (demoRand(500, ownDemoCnt) or movWind.stopAtZero) {
+  if (demoRand(500, ownDemoCnt) or movFluctuate.stopAtZero) {
     // all reset
     primEl.initPrimary();
     autoScale.resetAutoScale();
     // Next Leaf construction
-    movWind.rotate_pre_cfg();
+    movFluctuate.rotate_pre_cfg();
     resetConfig(false);
     // Reset (some) subordinates generators
     lightS.demoGenerator(allDemoCnt, true);
@@ -238,7 +241,7 @@ void MainProgAggr::demoGenerator(Element & primEl, AutoScale & autoScale) {
   }
   
   actionDone |= colorPal.demoGenerator(allDemoCnt, false);
-  actionDone |= movWind.demoGenerator(allDemoCnt, false);
+  actionDone |= movFluctuate.demoGenerator(allDemoCnt, false);
 
   if (actionDone) lastActionDistance = 0;
 }

@@ -12,7 +12,7 @@
 #include "autoscale.h"
 #include "opt_lyra.h"
 #include "garbage_coll.h"
-#include "windy.h"
+#include "fluctuate.h"
 #include <cassert>
 #include <iostream>
 #include <optional>
@@ -21,7 +21,7 @@
 #include <SFML/Window/Keyboard.hpp>
 
 bool recurance_elements_redraw(Element * const prim_ptr, const short level, 
-                sf::RenderWindow & win, const MovWind & algo_anim, AutoScale & autoScale);
+                sf::RenderWindow & win, const MovFluctuate & algo_anim, AutoScale & autoScale);
 
 
 int main(int argc, const char** argv)
@@ -93,7 +93,7 @@ int main(int argc, const char** argv)
 
       // Reconfigurate elements according to current algo and Draw in recurrence
       (void)recurance_elements_redraw(&prim_element, 0, window, 
-                                      fractMain.movWind, autoScale); // 0 - start level
+                                      fractMain.movFluctuate, autoScale); // 0 - start level
 
       autoScale.cycleResume(prim_element);
 
