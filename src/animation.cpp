@@ -129,6 +129,7 @@ void MovAnim::one_step_closing() {
   for (size_t ind {0}; ind < cFrac::NrOfElements; ++ind) {
     angles_tf[ind] -= angle_anim_delta[ind];
     if (angles_tf[ind] <= 0.0f) { // Stop at zero
+      stopAnimation();
       stopAtZero = true;
       angles_tf[ind] = 0.0f;
       algo_data[ind].angle = 0;
@@ -145,6 +146,7 @@ void MovAnim::one_step_opening() {
   for (size_t ind {0}; ind < cFrac::NrOfElements; ++ind) {
     angles_tf[ind] += angle_anim_delta[ind];
     if (angles_tf[ind] >= 160.0f * cTran::accurAngleMltp_f) { // Stop at wide angle
+      stopAnimation();
       angles_tf[ind] = 160.0f * cTran::accurAngleMltp_f;
       algo_data[ind].angle = 160 * cTran::accurAngleMltp;
     } else {

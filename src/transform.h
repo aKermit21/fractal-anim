@@ -101,11 +101,11 @@ private:
     static_cast<int>(1.8 * cTran::AccurMltp), // 5
     static_cast<int>(2 * cTran::AccurMltp),
     static_cast<int>(2.2 * cTran::AccurMltp),
-    static_cast<int>(2.5 * cTran::AccurMltp),
+    static_cast<int>(2.5 * cTran::AccurMltp), // 8. Default 
     static_cast<int>(2.7 * cTran::AccurMltp),
-    static_cast<int>(3 * cTran::AccurMltp), // 10. Default - 3 visible points
+    static_cast<int>(3 * cTran::AccurMltp), // 10. - 3 visible points
     static_cast<int>(3.3 * cTran::AccurMltp),
-    static_cast<int>(4.1 * cTran::AccurMltp),
+    static_cast<int>(4.1 * cTran::AccurMltp), 
     static_cast<int>(4.5 * cTran::AccurMltp),
     static_cast<int>(5 * cTran::AccurMltp),
     static_cast<int>(5.6 * cTran::AccurMltp),

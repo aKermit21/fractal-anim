@@ -18,7 +18,8 @@ struct OptParams {
   
   // Default parameters (if not defined given by CLI)
   bool optDemo {false};
-  int optSpeed {10}; // default speed
+  bool optGrowingOff {false};
+  int optSpeed {8}; // default speed
   bool optAutoScaleOff {false};
   std::string optSnapshot {cPath::cDefaultSnapshot}; 
   

@@ -17,6 +17,7 @@
 #include "logtxt.h"
 #include "opt_lyra.h"
 #include "fluctuate.h"
+// #include "growing.h"
 #include <string>
 
 // Main program aggregate (collection of) structs
@@ -26,7 +27,7 @@
 struct MainProgAggr {
   explicit MainProgAggr(OptParams opts)
       : logtxt{opts}
-      , movFluctuate{opts.optSpeed}
+      , movFluctuate{opts}
       , m_demoActive{opts.optDemo} 
   {
     Dbg::report_info("Init: MainProgAggr (demo=) ", opts.optDemo);

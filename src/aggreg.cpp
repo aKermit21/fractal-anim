@@ -130,8 +130,8 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
     logtxt.load_next_snapshot( prim_element, movFluctuate.algo_data, ColorPal::s_col_palet);
     // Refresh also flash color pallete
     colorPal.calc_flash_color_pallet(LightS::s_lightColor);
-    // Refresh final transformation algo
-    movFluctuate.algo_data_fluctuate = movFluctuate.conv_to_fluctuate(movFluctuate.algo_data);
+    // Refresh final transformation algo with optional growing animation
+    movFluctuate.refreshWithRestartGrowing();
     // In case of change of leaf contruction reset flash
     colorPal.reset_flash_algo();
     movFluctuate.resumeTimeFlow();

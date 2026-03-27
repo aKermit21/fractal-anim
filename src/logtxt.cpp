@@ -84,7 +84,7 @@ void LogText::welcome_draw(sf::RenderWindow & win, int speed) const {
   static int frames { 0 };
 
   // Present welcome text for double time as Help would be (after F1)
-  if (frames < 2* cHelpDrawFrames) {
+  if (frames < 3* cHelpDrawFrames) {
     // Do not print welcome together with help
     if (help_draw_cnt == 0) {
       textDraw.welcome_draw(win, speed);

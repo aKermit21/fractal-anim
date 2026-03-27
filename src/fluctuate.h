@@ -11,6 +11,7 @@
 
 #include "fractal.h"
 #include "animation.h"
+#include "opt_lyra.h"
 
 // Modification of Transformation Algorithm 
 // by adding wiggling effect (like from wind) to angle component or
@@ -18,21 +19,25 @@
 
 struct MovFluctuate : MovAnim {
 
-  MovFluctuate(int speed=10) 
-    : MovAnim{ speed }
-    , fluctuateState {false, true}
+  MovFluctuate(OptParams opts) 
+    : MovAnim{ opts.optSpeed }
+    , fluctuateState {false, false}
+    , GrowingEnabled {false}
     , growingDynamic {0} // all zero's except first element - see next lines of code
   { 
-    Dbg::report_info("Init: MovFluctuate (speed=)", speed); 
-    //TODO: Make this latter configurable by CLI option
-    // fluctuateState.growing_anim_state = true; 
-    // copy Algo per level
+    Dbg::report_info("Init: MovFluctuate (speed=)", opts.optSpeed); 
+    // Growing configurable by CLI option
+    if (!opts.optGrowingOff) {
+      GrowingEnabled = true;
+      fluctuateState.growingActive = true;
+    }
+    Dbg::report_info("Growing Activation: ", fluctuateState.growingActive); 
+    // Initialize algo_data_fluctuate table for growing before first display
+    // copy Algo per level - draw() uses this format
     algo_data_fluctuate = conv_to_fluctuate(algo_data);
-    // Growing primary size starts from non-zero
-    growingDynamic[0] = 3; 
-    // Initialize algo_data_fluctuate table for growin before first display
+    // Initialize algo_data_fluctuate table for growing before first display
     if (fluctuateState.growingActive) {
-      oneStepGrowingChange();
+      refreshWithRestartGrowing();
     }
   }
   
@@ -55,10 +60,22 @@ struct MovFluctuate : MovAnim {
 
   T_Fluctuate_Algo_Arr conv_to_fluctuate(T_Algo_Arr);
 
+  // Enable restart Growing effect
+  void refreshWithRestartGrowing(void);
+
 private:
+
+  // Assumed deviations in points for wind algo
+  constexpr static int cTolerance { 25 };
+
+  // General enable state (not necessary in given time)
+  bool GrowingEnabled;
   
   // realize growing specific fluctuation change
   void oneStepGrowingChange();
+  
+  // Wind (shaky)
+  void oneStepWindChange();
 
   // Specifig growing dynamic (x0.1)
   std::array<int, cFrac::NrOfOrders+1> growingDynamic;

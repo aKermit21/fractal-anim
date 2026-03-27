@@ -31,11 +31,17 @@ bool MovFluctuate::key_decodation(sf::Keyboard::Key key) {
     }
     return true; // my key
   case sf::Keyboard::Key::Space:
-  case sf::Keyboard::Key::R:
-  case sf::Keyboard::Key::P:
-  // TODO: Possible more keys needed
     // Reset/Restore Live transformation algo from more primitive one
     algo_data_fluctuate = conv_to_fluctuate(algo_data);
+    return true;
+  case sf::Keyboard::Key::R:
+    // Reset/Restore Live transformation algo from more primitive one
+    algo_data_fluctuate = conv_to_fluctuate(algo_data);
+    return true;
+  case sf::Keyboard::Key::P:
+    // TODO: Possible more keys needed
+    // Refresh final transformation algo with optional growing animation
+    refreshWithRestartGrowing();
     return true;
   default:
     // Not my key
@@ -78,53 +84,69 @@ void MovFluctuate::stop_wind() {
 void MovFluctuate::one_step_cfg_change() {
   // call also other animation - opening, closing
   MovAnim::one_step_cfg_change();
-  if (angle_anim_state != angleStop) {
+  // if (angle_anim_state != angleStop) {
     // Opening/Closing animation works on (more primary) algo_data
     algo_data_fluctuate = conv_to_fluctuate(algo_data);
-  }
+  // }
     
-  constexpr static int cTolerance { 25 };
-
-  // Growing
+  // Growing or Wind (shaky)
   if (fluctuateState.growingActive) {
     oneStepGrowingChange();
   } else if (fluctuateState.windActive) {
-    // Wind (shaky)
-    // 0th (primary element) is always fixed
-    for (size_t level {1}; level <= cFrac::NrOfOrders; ++level) {
-      int step = cTran::accurAngleMltp / 3;
-      // higher level bigger trembling
-      step *= level+1;
-      for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
-        auto delta = algo_data_fluctuate[level][elem].angle - algo_data[elem].angle;
-        auto delta_down = algo_data_fluctuate[level][elem].angle_down
-                          - algo_data[elem].angle_down;
+    oneStepWindChange();
+  }
+}
 
-        // Assymetric random changes for too big deviations
-        if (delta > cTran::accurAngleMltp * cTolerance) {
-          algo_data_fluctuate[level][elem].angle += (rand() % (2*step)) - 3*step/2;
-        } else if (delta < - cTran::accurAngleMltp * cTolerance) {
-          algo_data_fluctuate[level][elem].angle += (rand() % (2*step)) - 1*step/2;
-        } else {
-          // Random symmetric changes otherwise
-          algo_data_fluctuate[level][elem].angle += (rand() % (2*step)) - step;
-        }
-        
-        // Assymetric random changes for too big deviations
-        if (delta_down > cTran::accurAngleMltp * cTolerance) {
-          algo_data_fluctuate[level][elem].angle_down += (rand() % (2*step)) - 3*step/2;
-        } else if (delta_down < - cTran::accurAngleMltp * cTolerance) {
-          algo_data_fluctuate[level][elem].angle_down += (rand() % (2*step)) - 1*step/2;
-        } else {
-          // Random symmetric changes otherwise
-          algo_data_fluctuate[level][elem].angle_down += (rand() % (2*step)) - step;
-        }
+void MovFluctuate::oneStepWindChange() {
+  // Wind (shaky)
+  // 0th (primary element) is always fixed
+  for (size_t level {1}; level <= cFrac::NrOfOrders; ++level) {
+    int step = cTran::accurAngleMltp / 3;
+    // higher level bigger trembling
+    step *= level+1;
+    for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
+      auto delta = algo_data_fluctuate[level][elem].angle - algo_data[elem].angle;
+      auto delta_down = algo_data_fluctuate[level][elem].angle_down
+                        - algo_data[elem].angle_down;
+
+      // Assymetric random changes for too big deviations
+      if (delta > cTran::accurAngleMltp * cTolerance) {
+        algo_data_fluctuate[level][elem].angle += (rand() % (2*step)) - 3*step/2;
+      } else if (delta < - cTran::accurAngleMltp * cTolerance) {
+        algo_data_fluctuate[level][elem].angle += (rand() % (2*step)) - 1*step/2;
+      } else {
+        // Random symmetric changes otherwise
+        algo_data_fluctuate[level][elem].angle += (rand() % (2*step)) - step;
+      }
+      
+      // Assymetric random changes for too big deviations
+      if (delta_down > cTran::accurAngleMltp * cTolerance) {
+        algo_data_fluctuate[level][elem].angle_down += (rand() % (2*step)) - 3*step/2;
+      } else if (delta_down < - cTran::accurAngleMltp * cTolerance) {
+        algo_data_fluctuate[level][elem].angle_down += (rand() % (2*step)) - 1*step/2;
+      } else {
+        // Random symmetric changes otherwise
+        algo_data_fluctuate[level][elem].angle_down += (rand() % (2*step)) - step;
       }
     }
   }
-    
 }
 
+void MovFluctuate::refreshWithRestartGrowing(void) {
+  // copy Algo per level - draw() uses this format
+  algo_data_fluctuate = conv_to_fluctuate(algo_data);
+
+  if (GrowingEnabled) {
+    fluctuateState.growingActive = true;
+    // Populate all with 0's
+    growingDynamic = {0};
+    // except first item
+    growingDynamic[0] = 3; 
+    // start final algo modification before first desplay
+    oneStepGrowingChange();
+  }
+}
+ 
 void MovFluctuate::oneStepGrowingChange() {
   // Growing scheme
   // next column starts (0->1) if previous reaches PRIMING_NUMBER (here 5)

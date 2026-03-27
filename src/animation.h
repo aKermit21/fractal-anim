@@ -41,7 +41,7 @@ struct MovAnim : TranAlg {
   //default configuration array
   // constexpr static T_Algo_Arr algo_data_default = TranAlg::fixed_data_default;
 
-  MovAnim(int speed=10) 
+  MovAnim(int speed=8) 
     : TranAlg{ speed }
     , stopAtZero { false }
     , angle_anim_state { angleStop }
