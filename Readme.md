@@ -1,7 +1,7 @@
 # fractal-anim
 
 **Playing with:** Graphics, fractals, colors, animation.  
-**Exploring:** SFML (a 2D graphics library), C++, recursion, Meson (build system).  
+**Exploring:** SFML (contains 2D graphics library), C++17, recursion, Meson (build system).  
 
 ## The Idea  
 The idea is to draw 2D **fractal leaf** based on first element and set of transformation rules
@@ -19,11 +19,12 @@ Since both the light source (which can move and change color) and the fractal le
 ![fractal leaf example](doc/fractal_ex2.png "Fractal Leaf example")
 ![fractal leaf example](doc/fractal_ex3.png "Fractal Leaf example")
 ## Dependencies
-- SFML 3.0 (https://www.sfml-dev.org/) - to be installed manually before;
-- lyra (c++ arg parser) - embedded as subproject (see https://github.com/bfgroup/Lyra for source).
+- SFML 3.0 (https://www.sfml-dev.org/) - to be installed manually before.
+- lyra (c++ arg parser) - embedded as subproject (see https://github.com/bfgroup/Lyra for source), no action needed;
+- tomlplusplus (toml config parser) - when using Meson shall be automatically fetched from web and build as subproject at first meson call.
 ## Installation
 Clone GitHub project
-### Using meson
+### Using Meson
 It is recommended to use Meson build system as it handles dependencies
 (including subprojects),
 enables automatic configuration and explicit installation.
@@ -53,15 +54,15 @@ frexe [-h]      # run app from anywhere
 ```
 ### Using make
 It is also possible to use make with included Makefile.
-Following additional steps will be necessary:
+To do this one needs to perform manually additional two/three steps:
 - edit config.h.in manually in src/ and change file name to config.h;
-- install tomlplusplus shared library in system;
-- possible add aditional includes in Makefile;
-then:
+- install tomlplusplus (toml++) shared library in system;
+- possible add aditional includes in Makefile.
+Then:
 ``` shell
 cd fractal-anim
 mkdir build # from project root
-[make depend]  # update dependency file
+make depend  # update dependency file
 make release
 ./frexe [-h]
 ```
@@ -87,3 +88,6 @@ This will switch on asserts and extensive logging.
 
 Alternatively one can use 
 `make all`.
+
+## External website
+For more technical info please visiti page [Documentation](https://fractal.pcc21.com/)

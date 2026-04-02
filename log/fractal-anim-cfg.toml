@@ -2,8 +2,8 @@
 # 
 # F2 - to append current snaphot
 # F3 - to restore (consecutive) ones, starting from latest
-# One can also try to edit fields or copy/paste
-#     whole [[config]] section  
+# One can also try to edit fields, especially description,
+#     or copy/paste whole [[config]] section  
 #------------------------------------------------------------------------
 
 
