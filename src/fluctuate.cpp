@@ -28,6 +28,7 @@ bool MovFluctuate::key_decodation(sf::Keyboard::Key key) {
       fluctuateState.windActive = true;
     } else {
       fluctuateState.windActive = false;
+      stop_wind();
     }
     return true; // my key
   case sf::Keyboard::Key::Space:
@@ -70,13 +71,13 @@ T_Fluctuate_Algo_Arr MovFluctuate::conv_to_fluctuate(T_Algo_Arr assym_algo){
 }
 
 void MovFluctuate::stop_wind() {
-  if (fluctuateState.windActive) {
-    // stop wind (wobbling) modification if it was running
-    fluctuateState.windActive = false;
-    // restore non-modified transformation algo
-    algo_data_fluctuate = conv_to_fluctuate(algo_data);
-    // reset flash algo done by higher aggreg class
-    }
+  // stop wind (wobbling) modification if it was running
+  fluctuateState.windActive = false;
+  // restore non-modified transformation algo
+  algo_data_fluctuate = conv_to_fluctuate(algo_data);
+  // Clear by filling with zeros
+  windVelocity = {};
+  // reset flash algo done by higher aggreg class
 }
 
 
@@ -84,10 +85,10 @@ void MovFluctuate::stop_wind() {
 void MovFluctuate::one_step_cfg_change() {
   // call also other animation - opening, closing
   MovAnim::one_step_cfg_change();
-  // if (angle_anim_state != angleStop) {
+  if (angle_anim_state != angleStop) {
     // Opening/Closing animation works on (more primary) algo_data
     algo_data_fluctuate = conv_to_fluctuate(algo_data);
-  // }
+  }
     
   // Growing or Wind (shaky)
   if (fluctuateState.growingActive) {
@@ -107,27 +108,31 @@ void MovFluctuate::oneStepWindChange() {
     for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
       auto delta = algo_data_fluctuate[level][elem].angle - algo_data[elem].angle;
       auto delta_down = algo_data_fluctuate[level][elem].angle_down
-                        - algo_data[elem].angle_down;
+                     - algo_data[elem].angle_down;
 
       // Assymetric random changes for too big deviations
       if (delta > cTran::accurAngleMltp * cTolerance) {
-        algo_data_fluctuate[level][elem].angle += (rand() % (2*step)) - 3*step/2;
+        windVelocity[level][elem].up += (rand() % step) - step;
       } else if (delta < - cTran::accurAngleMltp * cTolerance) {
-        algo_data_fluctuate[level][elem].angle += (rand() % (2*step)) - 1*step/2;
+        windVelocity[level][elem].up += (rand() % step) + step;
       } else {
-        // Random symmetric changes otherwise
-        algo_data_fluctuate[level][elem].angle += (rand() % (2*step)) - step;
+        windVelocity[level][elem].up += (rand() % (2*step)) - step;
       }
-      
-      // Assymetric random changes for too big deviations
+      // down
       if (delta_down > cTran::accurAngleMltp * cTolerance) {
-        algo_data_fluctuate[level][elem].angle_down += (rand() % (2*step)) - 3*step/2;
+        windVelocity[level][elem].down += (rand() % step) - step;
       } else if (delta_down < - cTran::accurAngleMltp * cTolerance) {
-        algo_data_fluctuate[level][elem].angle_down += (rand() % (2*step)) - 1*step/2;
+        windVelocity[level][elem].down += (rand() % step) + step;
       } else {
-        // Random symmetric changes otherwise
-        algo_data_fluctuate[level][elem].angle_down += (rand() % (2*step)) - step;
+        windVelocity[level][elem].down += (rand() % (2*step)) - step;
       }
+
+      // Condider wind velocity has diffrent resolution than angle
+      algo_data_fluctuate[level][elem].angle +=
+        static_cast<int>(windVelocity[level][elem].up *cVelResol);
+      algo_data_fluctuate[level][elem].angle_down +=
+        static_cast<int>(windVelocity[level][elem].down *cVelResol);
+      
     }
   }
 }

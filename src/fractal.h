@@ -24,6 +24,7 @@ namespace cFrac {
   // if > 5, consider extending definition of "Transformation Data" in transform.h
 
   // maximal possible nesting, down generations, counting from 0 (primary) to 8
+  // minimum 7 because of fixed colors definitions in colors.h
   inline constexpr int NrOfOrders { 8 }; 
   // can be problematic to increase
 

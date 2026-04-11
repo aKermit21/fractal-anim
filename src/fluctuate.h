@@ -23,6 +23,7 @@ struct MovFluctuate : MovAnim {
     : MovAnim{ opts.optSpeed }
     , fluctuateState {false, false}
     , GrowingEnabled {false}
+    , windVelocity {}
     , growingDynamic {0} // all zero's except first element - see next lines of code
   { 
     Dbg::report_info("Init: MovFluctuate (speed=)", opts.optSpeed); 
@@ -66,7 +67,7 @@ struct MovFluctuate : MovAnim {
 private:
 
   // Assumed deviations in points for wind algo
-  constexpr static int cTolerance { 25 };
+  constexpr static int cTolerance { 10 };
 
   // General enable state (not necessary in given time)
   bool GrowingEnabled;
@@ -77,6 +78,14 @@ private:
   // Wind (shaky)
   void oneStepWindChange();
 
-  // Specifig growing dynamic (x0.1)
+  // Consider wind velocity has resolution of 0.01 deg while angle(_down) - 0.1
+  constexpr static float cVelResol { 0.1 };
+  
+  // temporary angular Velocity (x0.01 deg)
+  using T_UpDown = struct {int up; int down;};
+  std::array<std::array<T_UpDown, cFrac::NrOfElements>, cFrac::NrOfOrders+1>
+      windVelocity;
+
+  // Specific growing dynamic (x0.1)
   std::array<int, cFrac::NrOfOrders+1> growingDynamic;
 };

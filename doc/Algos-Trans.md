@@ -18,6 +18,7 @@ the same way (but with mirroring angles).
 Enables assymetrical transformation thus look.
 Needed for wind/wobbling effect
 Opening/Closing animation modyfies this directly
+F3 Loads from file to this format (cfg_toml module implementation)
 ### Function
 Obtained from previous structure by use of function
   `conv_to_assym()` 
@@ -28,11 +29,11 @@ Obtained from previous structure by use of function
 
 ## T_Fluctuate_Algo_Arr
 `T_Fluctuate_Algo_Arr = std::array<T_Algo_Arr, cFrac::NrOfOrders +1>;`
-Enables assymetrical and level dependent transformation thus look.
+Enables assymetrical and *level dependent* transformation thus look.
 Necessary for fluctuation effects (other than animation: close, open):
 - wind/wobbling effect
-- initial growin.
-Used now for core tranformation even if fluctuations are not active.
+- initial growing.
+Used now for core tranformations even if fluctuations are not active.
 ### Function
 Initial identically working tranformations
 obtained from previous algo structure by use of function:

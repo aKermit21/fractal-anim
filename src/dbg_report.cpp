@@ -82,19 +82,19 @@ void Dbg::report_mltpl_warning(Dbg::MultipleWarning mwtype, long int counter) {
     static long mwPointer { cCreatePointersThreshold };
 
     if ((mltplElementsCreate == mwtype) and (counter >= mwCreate)) {
-      std::cerr << " Warning: Too much Elements created: " << counter << '\n';
+      std::cerr << " Warning: Too much Elements created: >" << counter << '\n';
       mwCreate *= 2; // double threshold for next time
       ++warning_cnt; 
     }
     
     if ((mltplElementsDraw == mwtype) and (counter >= mwDraw)) {
-      std::cerr << " Warning: Too much Elements Draw per cycle: " << counter << '\n';
+      std::cerr << " Warning: Too much Elements Draw per cycle: >" << counter << '\n';
       mwDraw *= 2; // double threshold for next time
       ++warning_cnt; 
     }
     
     if ((mltplPointers == mwtype) and (counter >= mwPointer)) {
-      std::cerr << " Warning: Too much Smart Pointers collected: " << counter << '\n';
+      std::cerr << " Warning: Too much Smart Pointers collected: >" << counter << '\n';
       mwPointer *= 2; // double threshold for next time
       ++warning_cnt; 
     }
