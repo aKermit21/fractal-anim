@@ -85,8 +85,8 @@ void MovFluctuate::stop_wind() {
 void MovFluctuate::one_step_cfg_change() {
   // call also other animation - opening, closing
   MovAnim::one_step_cfg_change();
-  if (angle_anim_state != angleStop) {
-    // Opening/Closing animation works on (more primary) algo_data
+  if (isAnimationActive()) {
+    // Opening/Closing or Resizing animation works on (more primary) algo_data
     algo_data_fluctuate = conv_to_fluctuate(algo_data);
   }
     

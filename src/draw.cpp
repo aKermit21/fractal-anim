@@ -53,23 +53,17 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
     if (x1==0 or x2==0 or y1==0 or y2==0) {
       Dbg::report_warning(" Suspected (0) stem data coordinate(s), possible not initialized ", x1);
     } else {
-      // Scale down for drawing
-      float fx1 = x1/cTran::AccurMltp_f;
-      float fy1 = y1/cTran::AccurMltp_f;
-      float fx2 = x2/cTran::AccurMltp_f;
-      float fy2 = y2/cTran::AccurMltp_f;
-      float fvdx = (vec_xy.x + vec_xy.dx)/cTran::AccurMltp_f;
-      float fvdy = (vec_xy.y + vec_xy.dy)/cTran::AccurMltp_f;
-
+      float fvdx = (vec_xy.x + vec_xy.dx);
+      float fvdy = (vec_xy.y + vec_xy.dy);
       
       if (flash_cnt > 0 and LightS::s_lightActive) {
         // Draw Flash version
 
         // Filled triangles
         sf::VertexArray triangle(sf::PrimitiveType::Triangles, 3);
-        triangle[0].position = sf::Vector2f(fx1,fy1);
+        triangle[0].position = sf::Vector2f(x1,y1);
         triangle[1].position = sf::Vector2f(fvdx, fvdy);
-        triangle[2].position = sf::Vector2f(fx2,fy2);
+        triangle[2].position = sf::Vector2f(x2,y2);
 
         // Flash colors
         triangle[0].color = ColorPal::s_flash_col_palet[order].begin_c;
@@ -82,9 +76,9 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
 
         // Empty triangles
         sf::VertexArray two_lines(sf::PrimitiveType::Lines, 4);
-        two_lines[0].position = sf::Vector2f(fx1,fy1);
+        two_lines[0].position = sf::Vector2f(x1,y1);
         two_lines[1].position = sf::Vector2f(fvdx, fvdy);
-        two_lines[2].position = sf::Vector2f(fx2,fy2);
+        two_lines[2].position = sf::Vector2f(x2,y2);
         two_lines[3].position = sf::Vector2f(fvdx, fvdy);
         // Regular colors
         two_lines[0].color = ColorPal::s_col_palet[order].begin_c;
@@ -98,10 +92,10 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
     }
     
   } else { // order > 2
-    float fvx = vec_xy.x/cTran::AccurMltp_f;
-    float fvy = vec_xy.y/cTran::AccurMltp_f;
-    float fvdx = (vec_xy.x + vec_xy.dx)/cTran::AccurMltp_f;
-    float fvdy = (vec_xy.y + vec_xy.dy)/cTran::AccurMltp_f;
+    float fvx = vec_xy.x;
+    float fvy = vec_xy.y;
+    float fvdx = (vec_xy.x + vec_xy.dx);
+    float fvdy = (vec_xy.y + vec_xy.dy);
 
     if (flash_cnt > 0 and LightS::s_lightActive) {
       // Draw Flash version
@@ -150,17 +144,12 @@ void Stem::draw_stem(sf::RenderWindow &win, short order,
     if (x1==0 or x2==0 or y1==0 or y2==0) {
       Dbg::report_warning(" Suspected (0) stem data coordinate(s), possible not initialized ", x1);
     } else {
-      // Scale down for drawing
-      float fx1 = x1/cTran::AccurMltp_f;
-      float fy1 = y1/cTran::AccurMltp_f;
-      float fx2 = x2/cTran::AccurMltp_f;
-      float fy2 = y2/cTran::AccurMltp_f;
-      float fvdx = (vec_xy.x + vec_xy.dx)/cTran::AccurMltp_f;
-      float fvdy = (vec_xy.y + vec_xy.dy)/cTran::AccurMltp_f;
+      float fvdx = (vec_xy.x + vec_xy.dx);
+      float fvdy = (vec_xy.y + vec_xy.dy);
       sf::VertexArray two_lines(sf::PrimitiveType::Lines, 4);
-      two_lines[0].position = sf::Vector2f(fx1,fy1);
+      two_lines[0].position = sf::Vector2f(x1,y1);
       two_lines[1].position = sf::Vector2f(fvdx, fvdy);
-      two_lines[2].position = sf::Vector2f(fx2,fy2);
+      two_lines[2].position = sf::Vector2f(x2,y2);
       two_lines[3].position = sf::Vector2f(fvdx, fvdy);
 
       two_lines[0].color = ColorPal::s_col_palet[order].begin_c;
@@ -171,10 +160,10 @@ void Stem::draw_stem(sf::RenderWindow &win, short order,
     }
     
   } else { // order > 2
-    float fvx = vec_xy.x/cTran::AccurMltp_f;
-    float fvy = vec_xy.y/cTran::AccurMltp_f;
-    float fvdx = (vec_xy.x + vec_xy.dx)/cTran::AccurMltp_f;
-    float fvdy = (vec_xy.y + vec_xy.dy)/cTran::AccurMltp_f;
+    float fvx = vec_xy.x;
+    float fvy = vec_xy.y;
+    float fvdx = (vec_xy.x + vec_xy.dx);
+    float fvdy = (vec_xy.y + vec_xy.dy);
     sf::VertexArray one_line(sf::PrimitiveType::Lines, 2);
     one_line[0].position = sf::Vector2f(fvx,fvy);
     one_line[1].position = sf::Vector2f(fvdx, fvdy);

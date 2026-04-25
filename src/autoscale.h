@@ -51,11 +51,11 @@ struct AutoScale
   // Usable window center used throughout autoscale
   constexpr static int winUsable_x_center = cTran::cXcenterM;
   constexpr static int winUsable_y_center = cTran::cYcenterM + 
-                           ((cTran::AccurMltp * (cTopMargin - cMargin)) /2);
+                           ((cTopMargin - cMargin) /2.0);
   
   // Single step move (centering)
-  constexpr static int cSmallStep { 2 * cTran::AccurMltp}; // 2 (graphic) points
-  constexpr static int cAcceptedDiff { 3 * cTran::AccurMltp}; // 3 (graphic) points
+  constexpr static float cSmallStep { 2.0 }; // 2 (graphic) points
+  constexpr static float cAcceptedDiff { 3.0 }; // 3 (graphic) points
 
   // initialize data for new frame/cycle
   void cycleStart();

@@ -33,11 +33,11 @@ namespace cFrac {
   inline constexpr int WindowYsize { 900 }; 
   
   // Primary element size, position - assuming window 1100x900
-  inline constexpr int PrimStartX { 30 };
-  inline constexpr int PrimStartY { 530 };
-  inline constexpr int PrimVecX { 1000 };
-  inline constexpr int PrimVecY { -80 };
-  inline constexpr int PrimStemWidth { 10 };
+  inline constexpr float PrimStartX { 30.0 };
+  inline constexpr float PrimStartY { 530.0 };
+  inline constexpr float PrimVecX { 1000.0 };
+  inline constexpr float PrimVecY { -80.0 };
+  inline constexpr float PrimStemWidth { 10.0 };
   
   // counter mark demo initialization
   inline constexpr int DemoInitCnt { 1 };
@@ -57,18 +57,18 @@ enum LightAngleCase {lAngleUnknown = 0, lAngleAbove90, lAngleBelow90};
 // Warning: values are initially populated (overwritten) 
 //          from parent then recalculated
 struct Vec2D {
-  int x;
-  int y;
-  int dx;
-  int dy;
+  float x;
+  float y;
+  float dx;
+  float dy;
   // Original dx/dy used as base for Initial Growing transformation
   // used only for primary element recalculation
   // Can be optimize do use `original(s)` only in Primary Element
-  int originalDx;
-  int originalDy;
-  // move along x,y and x+dx,y+dy line in promile of original line
+  float originalDx;
+  float originalDy;
+  // move along x,y and x+dx,y+dy line in fraction of original line
   // affects x,y - shall be done before rotation
-  void reposition(const int promile);
+  void reposition(const float fraction);
   // rotate and scale - affects dx,dy
   // angle in 0.1deg scale
   void rotate(const int angle, const float scale);
@@ -87,16 +87,16 @@ struct Stem{
   // thickness type
   enum ThickLevel {thickNone, thick1, thick2};
   Vec2D vec_xy; // bare line along centre of stem
-  int x1 {};  // additional points at base of stem
-  int y1 {};  // deciding about their drawn thickness
-  int x2 {};
-  int y2 {};
+  float x1 {};  // additional pofloats at base of stem
+  float y1 {};  // deciding about their drawn thickness
+  float x2 {};
+  float y2 {};
   // move along x,y and x+dx,y+dy line - 
   // affects x,y and x1,y1,x2,y2 - shall be done before rotation;
   // used for contructing child element based on parent
-  void reposition_stem(const int percent, const ThickLevel level);
+  void reposition_stem(const float fraction, const ThickLevel level);
   // move by given (absolute) dx dy
-  void repositionStemAbsolute(const int dx, const int dy);
+  void repositionStemAbsolute(const float dx, const float dy);
   // Shrink stem according to given (usable) window Center
   void shrinkStemCenter(float factor, float cumulativeFactor, int xCenter, int yCenter);
   // Calculate coordinates of stem with some possible adjustmement (due to autoscale)
@@ -118,7 +118,7 @@ struct StemFlash : Stem {
   // had angle between light rays and stem/vec changed (<90 vs >90 deg)
   bool light_vec_angle_flip();
 private:
-  LightAngleCase light_vec_angle(int vx, int vy);
+  LightAngleCase light_vec_angle(float vx, float vy);
 };
 
 struct FluctuateState {
@@ -129,7 +129,7 @@ struct FluctuateState {
 // Common transformation basics - see tranform.h
 // live transformation version used for calculations
 struct DRec {
-  int repos;  // move (reposition) in promile
+  float repos;  // move (reposition) in fraction of original stem
   int angle;  // of a rotation for up branch
   int angle_down;  // of a rotation for down branch (if symmetrical then just -angle)
   float scale; 
@@ -137,7 +137,7 @@ struct DRec {
 
 // compact transformation version used for storing data
 struct DRecSymm {
-  int repos;  // move (reposition) in promile
+  float repos;  // move (reposition) in fraction of original stem
   int angle;  // of a rotation in 0.1 deg
   float scale; 
 };

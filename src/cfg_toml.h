@@ -43,8 +43,9 @@ private:
   [[maybe_unused]] constexpr static int cFlagError { 1 };
   [[maybe_unused]] constexpr static int cFlagColorError { 2 };
   [[maybe_unused]] constexpr static int cFlagMissingColorWarning { 3 };  // Fallback - using previous color - will be applied
-  [[maybe_unused]] constexpr static int cFlagOtherWarning { 4 };
-  constexpr static int cFlagAllBits { 5 };
+  [[maybe_unused]] constexpr static int cFlagIntInsteadOfFloat { 4 }; // In reposition
+  [[maybe_unused]] constexpr static int cFlagOtherWarning { 5 };
+  constexpr static int cFlagAllBits { 6 };
 
   using T_Result_Flags =  std::bitset<cFlagAllBits>;
   

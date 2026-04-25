@@ -163,10 +163,10 @@ void LogText::log_snapshot(std::string sData, const Element& prim_element) {
       << "  description = \"\"" << " # <- add some text to be displayed" << '\n'
       << "  time-date = \"" << timeString << "\"\n\n"
       << "  [config.primary]  # Primary element location/size\n"
-      << "    x = " << prim_element.stem_xy.vec_xy.x / cTran::AccurMltp << '\n'
-      << "    y = " << prim_element.stem_xy.vec_xy.y / cTran::AccurMltp << '\n'
-      << "    dx = " << prim_element.stem_xy.vec_xy.dx / cTran::AccurMltp << '\n'
-      << "    dy = " << prim_element.stem_xy.vec_xy.dy / cTran::AccurMltp << '\n' << std::endl;
+      << "    x = " << prim_element.stem_xy.vec_xy.x << '\n'
+      << "    y = " << prim_element.stem_xy.vec_xy.y << '\n'
+      << "    dx = " << prim_element.stem_xy.vec_xy.dx << '\n'
+      << "    dy = " << prim_element.stem_xy.vec_xy.dy << '\n' << std::endl;
 
     // Takes snpashot data from base classes
     fout << sData;

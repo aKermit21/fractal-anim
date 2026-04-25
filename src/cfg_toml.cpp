@@ -83,21 +83,33 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   T_Algo_Arr tmp_tran_algo {};
   T_Col_Palet tmp_colors {};
   Element tmp_prim {};
+
+  // Handling possible warnings
+  T_Result_Flags resultFlags { 0 };
   
   // Retrieving transform part
   // 
-  // Reposition reading
   for (size_t i=0; i < cFrac::NrOfElements; ++i) {
 
-    if (!thisConfig["transform"]["element"][i]["reposition"].is_integer()) return false;
-    std::optional<int> tmpint = thisConfig["transform"]["element"][i]
-      ["reposition"].value<int>();
-    if (!tmpint) return false;
-    tmp_tran_algo[i].repos = *tmpint;
+    // Reposition reading, accepted both integer (old format) and float (new)
+    if (thisConfig["transform"]["element"][i]["reposition"].is_integer()) {
+      std::optional<int> tmpint = thisConfig["transform"]["element"][i]
+        ["reposition"].value<int>();
+      if (!tmpint) return false;
+      tmp_tran_algo[i].repos = (*tmpint) / 1000.0; // Integer assumed in promile
+      resultFlags.set(cFlagIntInsteadOfFloat);
+    } else if (thisConfig["transform"]["element"][i]["reposition"].is_floating_point()) {
+      std::optional<float> tmpfloat = thisConfig["transform"]["element"][i]
+        ["reposition"].value<float>();
+      if (!tmpfloat) return false;
+      tmp_tran_algo[i].repos = *tmpfloat;
+    } else {
+      return false;
+    }
   
     // Angle reading
     if (!thisConfig["transform"]["element"][i]["angle"].is_integer()) return false;
-    tmpint = thisConfig["transform"]["element"][i]["angle"].value<int>();
+    std::optional<int> tmpint = thisConfig["transform"]["element"][i]["angle"].value<int>();
     if (!tmpint) return false;
 
     // See log_trans_config() and conv_to_assym() transformation
@@ -124,7 +136,6 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   
   // Retrieving Color part
   // For this part it is acceptable partial faulty config read 
-  T_Result_Flags resultFlags { 0 };
   StemColor prev_colors {};
   
   for (size_t i=0; i < cFrac::NrOfOrders+1; ++i) {
@@ -267,23 +278,23 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   if (!thisConfig["primary"]["x"].is_integer()) return false;
   std::optional<int> tmpint = thisConfig["primary"]["x"].value<int>();
   if (!tmpint) return false;
-  tmp_prim.stem_xy.vec_xy.x = *tmpint * cTran::AccurMltp;
+  tmp_prim.stem_xy.vec_xy.x = *tmpint;
   
   if (!thisConfig["primary"]["y"].is_integer()) return false;
   tmpint = thisConfig["primary"]["y"].value<int>();
   if (!tmpint) return false;
-  tmp_prim.stem_xy.vec_xy.y = *tmpint * cTran::AccurMltp;
+  tmp_prim.stem_xy.vec_xy.y = *tmpint;
   
   if (!thisConfig["primary"]["dx"].is_integer()) return false;
   tmpint = thisConfig["primary"]["dx"].value<int>();
   if (!tmpint) return false;
-  tmp_prim.stem_xy.vec_xy.dx = *tmpint * cTran::AccurMltp;
+  tmp_prim.stem_xy.vec_xy.dx = *tmpint;
   tmp_prim.stem_xy.vec_xy.originalDx = tmp_prim.stem_xy.vec_xy.dx;
   
   if (!thisConfig["primary"]["dy"].is_integer()) return false;
   tmpint = thisConfig["primary"]["dy"].value<int>();
   if (!tmpint) return false;
-  tmp_prim.stem_xy.vec_xy.dy = *tmpint * cTran::AccurMltp;
+  tmp_prim.stem_xy.vec_xy.dy = *tmpint;
   tmp_prim.stem_xy.vec_xy.originalDy = tmp_prim.stem_xy.vec_xy.dy;
   
   // if (!thisConfig["primary"]["width"].is_number()) return false;
@@ -330,11 +341,13 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
 
   if (resultFlags.test(cFlagError)) {
     return false;
-  } else if (resultFlags.test(cFlagMissingColorWarning)) {
-    Dbg::report_info("TOML config: Some color orders are missing; copying from previous orders");
-  } else {
-    // Assumed OK
   }
+  if (resultFlags.test(cFlagMissingColorWarning)) {
+    Dbg::report_info("TOML config: Some color orders are missing; copying from previous orders");
+  }
+  if (resultFlags.test(cFlagIntInsteadOfFloat)) {
+    Dbg::report_warning("TOML config: Reposition number integer (expected float); assuming in promile");
+  } 
 
   m_fileconfigState = cFileConfigLoaded; 
   return true; // success

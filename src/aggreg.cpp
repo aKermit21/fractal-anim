@@ -158,7 +158,7 @@ void MainProgAggr::key_decodation(const sf::Keyboard::Key key,
       colorPal.reset_flash_algo();
       movFluctuate.resumeTimeFlow();
     }
-    // Scan for subordinate classes key actiions 
+    // Scan for subordinate classes key actions 
     bool keyFound = false;
     // possible Colors Palletes related control
     keyFound |= colorPal.key_decodation(key);

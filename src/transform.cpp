@@ -16,24 +16,24 @@
 #include <assert.h>
 
 // Small vector - below this size stop recursive search/draw of children
-int TranAlg::s_SmallVect;
-int TranAlg::s_SmallVecAnim;
+float TranAlg::s_SmallVect;
+float TranAlg::s_SmallVecAnim;
 
 
 void Element::initPrimary() {
   // Use multiplied values for better accuracy tranformation
-  stem_xy.vec_xy.x = cFrac::PrimStartX * cTran::AccurMltp; 
-  stem_xy.vec_xy.y = cFrac::PrimStartY * cTran::AccurMltp; 
-  stem_xy.vec_xy.dx = cFrac::PrimVecX * cTran::AccurMltp; 
-  stem_xy.vec_xy.dy = cFrac::PrimVecY * cTran::AccurMltp; 
+  stem_xy.vec_xy.x = cFrac::PrimStartX; 
+  stem_xy.vec_xy.y = cFrac::PrimStartY; 
+  stem_xy.vec_xy.dx = cFrac::PrimVecX; 
+  stem_xy.vec_xy.dy = cFrac::PrimVecY; 
   // Make a copy of dx and dy
-  stem_xy.vec_xy.originalDx = cFrac::PrimVecX * cTran::AccurMltp; 
-  stem_xy.vec_xy.originalDy = cFrac::PrimVecY * cTran::AccurMltp; 
+  stem_xy.vec_xy.originalDx = cFrac::PrimVecX; 
+  stem_xy.vec_xy.originalDy = cFrac::PrimVecY; 
   // stem width
   stem_xy.x1 = stem_xy.vec_xy.x;
   stem_xy.x2 = stem_xy.vec_xy.x;
-  stem_xy.y1 = stem_xy.vec_xy.y - (cFrac::PrimStemWidth * cTran::AccurMltp); 
-  stem_xy.y2 = stem_xy.vec_xy.y + (cFrac::PrimStemWidth * cTran::AccurMltp); 
+  stem_xy.y1 = stem_xy.vec_xy.y - cFrac::PrimStemWidth; 
+  stem_xy.y2 = stem_xy.vec_xy.y + cFrac::PrimStemWidth; 
   // prevent initial angle change
   stem_xy.prev_l_angle = lAngleUnknown;
 }
@@ -43,7 +43,7 @@ void Element::initPrimary() {
 // considering index and branch type
 void Element::transform_vec_stem(const T_Fluctuate_Algo_Arr & algo_fluct_data) { 
   
-  int promile; // reposition begining of stem along parent line (in promile)
+  float fraction; // reposition begining of stem along parent line (in fraction)
   int angle;   // rotation
   float scale; // diminishing
   
@@ -61,9 +61,9 @@ void Element::transform_vec_stem(const T_Fluctuate_Algo_Arr & algo_fluct_data) {
     if (arr_index < 0) {
       assert(false and "negative index"); // always assert
       Dbg::report_error("Branch Index out of range: ", index);
-      promile = 0; angle = 0; scale = 1.0;
+      fraction = 0.0; angle = 0; scale = 1.0;
     } else {
-      promile = algo_fluct_data.at(order).at(arr_index).repos; 
+      fraction = algo_fluct_data.at(order).at(arr_index).repos; 
       if (b_type == upBranch) {
           angle = algo_fluct_data.at(order).at(arr_index).angle;
           scale = algo_fluct_data.at(order).at(arr_index).scale;
@@ -77,13 +77,13 @@ void Element::transform_vec_stem(const T_Fluctuate_Algo_Arr & algo_fluct_data) {
     }
 
     if (order == 1) {
-      stem_xy.reposition_stem(promile, Stem::thick2);
+      stem_xy.reposition_stem(fraction, Stem::thick2);
     } else  if (order == 2) {
-      stem_xy.reposition_stem(promile, Stem::thick1);
+      stem_xy.reposition_stem(fraction, Stem::thick1);
     } else {
       // Reposition vector only
       // for higher orders line without width
-      stem_xy.vec_xy.reposition(promile);
+      stem_xy.vec_xy.reposition(fraction);
     }
 
     stem_xy.vec_xy.rotate(angle, scale);
@@ -125,7 +125,7 @@ std::string TranAlg::log_trans_config() {
   for (size_t ind {0}; ind < cFrac::NrOfElements; ++ind) {
     // inline toml table
     ss << "      {reposition = " << algo_data[ind].repos << ", ";  
-    ss << "angle = " << (algo_data[ind].angle * 10L) / cTran::accurAngleMltp << ", ";  
+    ss << "angle = " << static_cast<int>((algo_data[ind].angle * 10L) / cTran::accurAngleMltp) << ", ";  
     ss << "scale = " << algo_data[ind].scale << "},\n";
   }
   ss <<"     ]\n";
@@ -156,7 +156,7 @@ void TranAlg::speedScaleVerify(void) {
 
   // Initial Speed vs Detailed drawing scale table
   s_SmallVect = SpeedScalaData[m_speedScale];
-  s_SmallVecAnim = static_cast<int>(static_cast<float>(s_SmallVect) *1.3f); // Animation rate
+  s_SmallVecAnim = s_SmallVect *1.3f; // Animation rate
 }
 
 
@@ -217,12 +217,10 @@ T_Algo_Arr TranAlg::get_prop_cfg_arr(float scale_max, float scale_min){
   //  ______|______|_____|_____|_____|____
 
   float t_repo_prop = 0;   // reposition in proportional scale
-  float t_repo = 0; // real reposition in promile
   auto prev_it = arr.begin();  // iterator to previous element except first run
   for (auto it { arr.begin() }; it != arr.end(); ++it ) {
     t_repo_prop += prev_it->scale;   
-    t_repo = t_repo_prop *1000 / sum_repo; // real reposition in promile
-    it->repos = static_cast<int>(t_repo);
+    it->repos = t_repo_prop / sum_repo; // real reposition
     // for use in next loop
     prev_it = it;
   }

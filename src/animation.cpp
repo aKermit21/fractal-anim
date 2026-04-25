@@ -203,6 +203,7 @@ void MovAnim::one_step_resizing(){
     break;
   default: break;
   }
+
 }
 
 bool MovAnim::demoGenerator(long int demoCnt, bool resetAction) {

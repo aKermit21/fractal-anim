@@ -51,11 +51,11 @@
   [config.transform]
     # consecutive elements/branches
     element = [
-      {reposition = 222, angle = 750, scale = 0.38},
-      {reposition = 445, angle = 686, scale = 0.3225},
-      {reposition = 634, angle = 625, scale = 0.265},
-      {reposition = 790, angle = 561, scale = 0.2075},
-      {reposition = 912, angle = 500, scale = 0.15},
+      {reposition = 0.222, angle = 750, scale = 0.38},
+      {reposition = 0.445, angle = 686, scale = 0.3225},
+      {reposition = 0.634, angle = 625, scale = 0.265},
+      {reposition = 0.790, angle = 561, scale = 0.2075},
+      {reposition = 0.912, angle = 500, scale = 0.15},
      ]
 
 
@@ -103,11 +103,11 @@
   [config.transform]
     # consecutive elements/branches
     element = [
-      {reposition = 222, angle = 750, scale = 0.38},
-      {reposition = 445, angle = 686, scale = 0.3225},
-      {reposition = 634, angle = 625, scale = 0.265},
-      {reposition = 790, angle = 561, scale = 0.2075},
-      {reposition = 912, angle = 500, scale = 0.15},
+      {reposition = 0.222, angle = 750, scale = 0.38},
+      {reposition = 0.445, angle = 686, scale = 0.3225},
+      {reposition = 0.634, angle = 625, scale = 0.265},
+      {reposition = 0.790, angle = 561, scale = 0.2075},
+      {reposition = 0.912, angle = 500, scale = 0.15},
      ]
 
 #-------------------------------------------------------------
@@ -154,11 +154,11 @@
   [config.transform]
     # consecutive elements/branches
     element = [
-      {reposition = 237, angle = 255, scale = 0.532},
-      {reposition = 475, angle = 233, scale = 0.4365},
-      {reposition = 670, angle = 211, scale = 0.341},
-      {reposition = 823, angle = 190, scale = 0.2455},
-      {reposition = 932, angle = 168, scale = 0.15},
+      {reposition = 0.237, angle = 255, scale = 0.532},
+      {reposition = 0.475, angle = 233, scale = 0.4365},
+      {reposition = 0.670, angle = 211, scale = 0.341},
+      {reposition = 0.823, angle = 190, scale = 0.2455},
+      {reposition = 0.932, angle = 168, scale = 0.15},
      ]
 
 #-------------------------------------------------------------
@@ -205,11 +205,11 @@
   [config.transform]
     # consecutive elements/branches
     element = [
-      {reposition = 237, angle = 440, scale = 0.532},
-      {reposition = 475, angle = 403, scale = 0.4365},
-      {reposition = 670, angle = 366, scale = 0.341},
-      {reposition = 823, angle = 329, scale = 0.2455},
-      {reposition = 932, angle = 292, scale = 0.15},
+      {reposition = 0.237, angle = 440, scale = 0.532},
+      {reposition = 0.475, angle = 403, scale = 0.4365},
+      {reposition = 0.670, angle = 366, scale = 0.341},
+      {reposition = 0.823, angle = 329, scale = 0.2455},
+      {reposition = 0.932, angle = 292, scale = 0.15},
      ]
 
 
@@ -259,11 +259,11 @@
   [config.transform]
     # consecutive elements/branches
     element = [
-      {reposition = 222, angle = 750, scale = 0.38},
-      {reposition = 445, angle = 686, scale = 0.3225},
-      {reposition = 634, angle = 625, scale = 0.265},
-      {reposition = 790, angle = 561, scale = 0.2075},
-      {reposition = 912, angle = 500, scale = 0.15},
+      {reposition = 0.222, angle = 750, scale = 0.38},
+      {reposition = 0.445, angle = 686, scale = 0.3225},
+      {reposition = 0.634, angle = 625, scale = 0.265},
+      {reposition = 0.790, angle = 561, scale = 0.2075},
+      {reposition = 0.912, angle = 500, scale = 0.15},
      ]
 
 #-------------------------------------------------------------
@@ -310,11 +310,11 @@
   [config.transform]
     # consecutive elements/branches
     element = [
-      {reposition = 222, angle = 750, scale = 0.38},
-      {reposition = 445, angle = 686, scale = 0.3225},
-      {reposition = 634, angle = 625, scale = 0.265},
-      {reposition = 790, angle = 561, scale = 0.2075},
-      {reposition = 912, angle = 500, scale = 0.15},
+      {reposition = 0.222, angle = 750, scale = 0.38},
+      {reposition = 0.445, angle = 686, scale = 0.3225},
+      {reposition = 0.634, angle = 625, scale = 0.265},
+      {reposition = 0.790, angle = 561, scale = 0.2075},
+      {reposition = 0.912, angle = 500, scale = 0.15},
      ]
 
 #-------------------------------------------------------------
@@ -361,11 +361,11 @@
   [config.transform]
     # consecutive elements/branches
     element = [
-      {reposition = 222, angle = 750, scale = 0.38},
-      {reposition = 445, angle = 686, scale = 0.3225},
-      {reposition = 634, angle = 625, scale = 0.265},
-      {reposition = 790, angle = 561, scale = 0.2075},
-      {reposition = 912, angle = 500, scale = 0.15},
+      {reposition = 0.222, angle = 750, scale = 0.38},
+      {reposition = 0.445, angle = 686, scale = 0.3225},
+      {reposition = 0.634, angle = 625, scale = 0.265},
+      {reposition = 0.790, angle = 561, scale = 0.2075},
+      {reposition = 0.912, angle = 500, scale = 0.15},
      ]
 
 
@@ -413,11 +413,11 @@
   [config.transform]
     # consecutive elements/branches
     element = [
-      {reposition = 222, angle = 750, scale = 0.38},
-      {reposition = 445, angle = 686, scale = 0.3225},
-      {reposition = 634, angle = 625, scale = 0.265},
-      {reposition = 790, angle = 561, scale = 0.2075},
-      {reposition = 912, angle = 500, scale = 0.15},
+      {reposition = 0.222, angle = 750, scale = 0.38},
+      {reposition = 0.445, angle = 686, scale = 0.3225},
+      {reposition = 0.634, angle = 625, scale = 0.265},
+      {reposition = 0.790, angle = 561, scale = 0.2075},
+      {reposition = 0.912, angle = 500, scale = 0.15},
      ]
 
 #-------------------------------------------------------------
@@ -464,10 +464,10 @@
   [config.transform]
     # consecutive elements/branches
     element = [
-      {reposition = 234, angle = 660, scale = 0.422851},
-      {reposition = 468, angle = 605, scale = 0.349669},
-      {reposition = 662, angle = 550, scale = 0.276488},
-      {reposition = 815, angle = 495, scale = 0.203306},
-      {reposition = 927, angle = 440, scale = 0.130125},
+      {reposition = 0.234, angle = 660, scale = 0.422851},
+      {reposition = 0.468, angle = 605, scale = 0.349669},
+      {reposition = 0.662, angle = 550, scale = 0.276488},
+      {reposition = 0.815, angle = 495, scale = 0.203306},
+      {reposition = 0.927, angle = 440, scale = 0.130125},
      ]
 

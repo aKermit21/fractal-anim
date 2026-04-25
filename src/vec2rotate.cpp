@@ -21,38 +21,38 @@ constexpr static int cPromile { 1000 };
 // rotation matrix calculations
 template<typename T>
 void Vec2D::rotation_matrix(const T sin_val, const T cos_val) {
-  int dx_new = static_cast<int>(dx * cos_val - dy * sin_val);
-  dy = static_cast<int>(dx * sin_val + dy * cos_val);
+  float dx_new = dx * cos_val - dy * sin_val;
+  dy = dx * sin_val + dy * cos_val;
   dx = dx_new;
 }
 
 // move along x,y and x+dx,y+dy line - shall be done before rotation
 // proportionaly to length size
-void Vec2D::reposition(const int promile) {
-  x = x + (dx * promile) / cPromile;
-  y = y + (dy * promile) / cPromile;
+void Vec2D::reposition(const float fraction) {
+  x = x + (dx * fraction);
+  y = y + (dy * fraction);
 }
 
 
 // move along x,y and x+dx,y+dy line - shall be done before rotation
-void Stem::reposition_stem(const int promile, Stem::ThickLevel level) {
-  int thickness = 0;
+void Stem::reposition_stem(const float fraction, Stem::ThickLevel level) {
+  float thickness = 0.0;
 
-  if (level == Stem::thick2) { thickness = 6; } 
-  else if (level == Stem::thick1) { thickness = 8; }
-  else { thickness = 0; }
+  if (level == Stem::thick2) { thickness = 0.006; } 
+  else if (level == Stem::thick1) { thickness = 0.008; }
+  else { thickness = 0.0; }
 
   // creating width (optionally)
   if (level != Stem::thickNone) {
-    x1 = vec_xy.x + (vec_xy.dx * (promile - thickness)) / cPromile;
-    y1 = vec_xy.y + (vec_xy.dy * (promile - thickness)) / cPromile;
-    x2 = vec_xy.x + (vec_xy.dx * (promile + thickness)) / cPromile;
-    y2 = vec_xy.y + (vec_xy.dy * (promile + thickness)) / cPromile;
+    x1 = vec_xy.x + vec_xy.dx * (fraction - thickness);
+    y1 = vec_xy.y + vec_xy.dy * (fraction - thickness);
+    x2 = vec_xy.x + vec_xy.dx * (fraction + thickness);
+    y2 = vec_xy.y + vec_xy.dy * (fraction + thickness);
   }
 
   // Central Line transformation
-  vec_xy.x = vec_xy.x + (vec_xy.dx * promile) / cPromile;
-  vec_xy.y = vec_xy.y + (vec_xy.dy * promile) / cPromile;
+  vec_xy.x = vec_xy.x + (vec_xy.dx * fraction);
+  vec_xy.y = vec_xy.y + (vec_xy.dy * fraction);
 }
 
 
@@ -65,14 +65,10 @@ void Stem::recalculateStemWidthCoordinates(float cumulativeFactor) {
   stem_y = vec_xy.dx;
   length = std::sqrt(stem_x*stem_x + stem_y*stem_y);
   auto adjustedStemWidth = cumulativeFactor * cFrac::PrimStemWidth;
-  y1 = static_cast<int>
-    (vec_xy.y - stem_y * ((adjustedStemWidth/length) * cTran::AccurMltp ));
-  y2 = static_cast<int>
-    (vec_xy.y + stem_y * ((adjustedStemWidth/length) * cTran::AccurMltp ));
-  x1 = static_cast<int>
-    (vec_xy.x - stem_x * ((adjustedStemWidth/length) * cTran::AccurMltp ));
-  x2 = static_cast<int>
-    (vec_xy.x + stem_x * ((adjustedStemWidth/length) * cTran::AccurMltp ));
+  y1 =  (vec_xy.y - stem_y * (adjustedStemWidth/length) );
+  y2 =  (vec_xy.y + stem_y * (adjustedStemWidth/length) );
+  x1 =  (vec_xy.x - stem_x * (adjustedStemWidth/length) );
+  x2 =  (vec_xy.x + stem_x * (adjustedStemWidth/length) );
 }
 
 
@@ -104,7 +100,7 @@ void Stem::shrinkStemCenter(float factor, float cumulativeFactor,
 }
 
 // move by given (absolute) dx dy
-void Stem::repositionStemAbsolute(const int dx, const int dy) {
+void Stem::repositionStemAbsolute(const float dx, const float dy) {
   // Move Stem axis (vector)
   vec_xy.x += dx;
   vec_xy.y += dy;

@@ -17,17 +17,16 @@
 // used to tranform parent to child
 // and setup primary element and
 namespace cTran {
-  // Values mulitplications (int fractioning) used in positioning for better accuracy
-  inline constexpr int AccurMltp { 32 };
-  inline constexpr float AccurMltp_f { static_cast<float>(AccurMltp) };
-  
   // Angle degree values mulitplications used in tranformations for better accuracy
-  inline constexpr int accurAngleMltp { 32 };
-  inline constexpr float accurAngleMltp_f { static_cast<float>(AccurMltp) };
+  // as result degree resolution is 1/accurAngleMltp.
+  // Discrete (int) representation is needed to utilize lookup table
+  // See - Vec2D::rotate()
+  inline constexpr float accurAngleMltp { 32 };
+  inline constexpr float accurAngleMltp_f { static_cast<float>(accurAngleMltp) };
 
   // Window size centre in accuracy units
-  inline constexpr int cXcenterM = (cFrac::WindowXsize * cTran::AccurMltp) / 2;
-  inline constexpr int cYcenterM = (cFrac::WindowYsize * cTran::AccurMltp) / 2;
+  inline constexpr float cXcenterM = cFrac::WindowXsize / 2.0;
+  inline constexpr float cYcenterM = cFrac::WindowYsize / 2.0;
 }
 
 struct TranAlg {
@@ -55,8 +54,8 @@ struct TranAlg {
 
 
   // Small vector - below this size stop recursive search/draw of children
-  static int s_SmallVect;
-  static int s_SmallVecAnim;
+  static float s_SmallVect;
+  static float s_SmallVecAnim;
 
   // rotate from one of the pre-calculated configuration
   void rotate_pre_cfg();
@@ -92,28 +91,28 @@ private:
 
   // Speed scale data - small vector sizes threshold (to be drawn)
   constexpr static int SpeedScaleDataSize = 21;
-  constexpr static std::array<int, SpeedScaleDataSize> SpeedScalaData = {
-    cTran::AccurMltp,  // 0. - Single actual point
-    static_cast<int>(1.1 * cTran::AccurMltp), 
-    static_cast<int>(1.2 * cTran::AccurMltp),
-    static_cast<int>(1.4 * cTran::AccurMltp),
-    static_cast<int>(1.6 * cTran::AccurMltp),
-    static_cast<int>(1.8 * cTran::AccurMltp), // 5
-    static_cast<int>(2 * cTran::AccurMltp),
-    static_cast<int>(2.2 * cTran::AccurMltp),
-    static_cast<int>(2.5 * cTran::AccurMltp), // 8. Default 
-    static_cast<int>(2.7 * cTran::AccurMltp),
-    static_cast<int>(3 * cTran::AccurMltp), // 10. - 3 visible points
-    static_cast<int>(3.3 * cTran::AccurMltp),
-    static_cast<int>(4.1 * cTran::AccurMltp), 
-    static_cast<int>(4.5 * cTran::AccurMltp),
-    static_cast<int>(5 * cTran::AccurMltp),
-    static_cast<int>(5.6 * cTran::AccurMltp),
-    static_cast<int>(6.4 * cTran::AccurMltp),
-    static_cast<int>(7 * cTran::AccurMltp),
-    static_cast<int>(8 * cTran::AccurMltp),
-    static_cast<int>(9 * cTran::AccurMltp),
-    static_cast<int>(10 * cTran::AccurMltp), // 20.  - 10 points
+  constexpr static std::array<float, SpeedScaleDataSize> SpeedScalaData = {
+    1.0,  // 0. - Single actual point
+    1.1, 
+    1.2,
+    1.4,
+    1.6,
+    1.8, // 5
+    2,
+    2.2,
+    2.5, // 8. Default 
+    2.7,
+    3, // 10. - 3 visible points
+    3.3,
+    4.1, 
+    4.5,
+    5,
+    5.6,
+    6.4,
+    7,
+    8,
+    9,
+    10 // 20.  - 10 points
   };
 
   // Convert Symmetrical algo to working copy of (potentialy) Asymmetrical
@@ -127,30 +126,30 @@ private:
   //  { repos (promile), angle (0.1deg), scale }
   constexpr static std::array<T_Algo_Arr_Symm, 4U> preCalcAlgoData {{
   
-    {{{222, 750, 0.38f}, // default: ANGLE_MAX = 75 SCALE_MAX 0.38f
-    {445, 687, 0.3225f},
-    {634, 625, 0.265f},
-    {790, 562, 0.2075f},
-    {912, 500, 0.15f}}}, // default: ANGLE_MIN = 50 SCALE_MIN 0.15f    
+    {{{0.222f, 750, 0.38f}, // default: ANGLE_MAX = 75 SCALE_MAX 0.38f
+    {0.445f, 687, 0.3225f},
+    {0.634f, 625, 0.265f},
+    {0.790f, 562, 0.2075f},
+    {0.912f, 500, 0.15f}}}, // default: ANGLE_MIN = 50 SCALE_MIN 0.15f    
   
-    {{{234, 660, 0.422851f},
-    {468, 605, 0.349669f},
-    {662, 550, 0.276488f},
-    {815, 495, 0.203306f},
-    {927, 440, 0.130125f}}}, // more dense but slower animation
+    {{{0.234f, 660, 0.422851f},
+    {0.468f, 605, 0.349669f},
+    {0.662f, 550, 0.276488f},
+    {0.815f, 495, 0.203306f},
+    {0.927f, 440, 0.130125f}}}, // more dense but slower animation
     
-    {{{228, 495, 0.394231f},
-    {456, 453, 0.330541f},
-    {647, 412, 0.26685f},
-    {801, 371, 0.20316f},
-    {919, 330, 0.139469f}}}, // slightly more dense - more closed
+    {{{0.228f, 495, 0.394231f},
+    {0.456f, 453, 0.330541f},
+    {0.647f, 412, 0.26685f},
+    {0.801f, 371, 0.20316f},
+    {0.919f, 330, 0.139469f}}}, // slightly more dense - more closed
 
-    {{{238, 660, 0.468851f},
-    {476, 605, 0.38417f},
-    {672, 550, 0.299488f},
-    {824, 495, 0.214806f},
-    {933, 440, 0.130125f}}},
-  // The Array can be extended or elements replaced taking data from snapshot log
+    {{{0.238f, 660, 0.468851f},
+    {0.476f, 605, 0.38417f},
+    {0.672f, 550, 0.299488f},
+    {0.824f, 495, 0.214806f},
+    {0.933f, 440, 0.130125f}}},
+  // The Array of embedded default configurations
   }};
   
 };

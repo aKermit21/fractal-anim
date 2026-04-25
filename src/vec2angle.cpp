@@ -26,27 +26,28 @@
 //                     _ _
 // calculation formula u*v for 2d vector is =(ux*vx + uy*vy)
 
-LightAngleCase StemFlash::light_vec_angle(int vx, int vy) {
-  long int dot_product;
+LightAngleCase StemFlash::light_vec_angle(float vx, float vy) {
 
   // If vector size is too small (single drawing point) assume AngleUnknown
-  constexpr int cTooSmall = cTran::AccurMltp;
-  if ((abs(vx) < cTooSmall) and (abs(vy) < cTooSmall)) {
+  constexpr float cTooSmall = 1.2;
+
+  if ((std::abs(vx) < cTooSmall) and (std::abs(vy) < cTooSmall)) {
     return lAngleUnknown;
   }
   
   // take dot product between light vector and fractal (stem) vector
-  dot_product = (LightS::s_lightVec.x * static_cast<long int>(vx)) + 
-                (LightS::s_lightVec.y * static_cast<long int>(vy));
+  float dot_product;
+  dot_product = (LightS::s_lightVec.x * vx) + 
+                (LightS::s_lightVec.y * vy);
   
   // Debug
   // Dbg::report_trace("lvec.x = ", LightS::s_lightVec.x);
   // Dbg::report_trace("lvec.y = ", LightS::s_lightVec.y);
-  // Dbg::report_trace("vx = ", vx);
-  // Dbg::report_trace("vy = ", vy);
+  // Dbg::report_trace("vx = ", static_cast<long>(vx));
+  // Dbg::report_trace("vy = ", static_cast<long>(vy));
   // std::cout << " dot_product " << dot_product << "\n";
   
-  if (dot_product > 0) {
+  if (dot_product > 0.0) {
     return lAngleBelow90;
   } else {
     return lAngleAbove90;

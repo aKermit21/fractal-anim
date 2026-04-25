@@ -16,8 +16,8 @@ using VecMinMax = Dbg::VecMinMax;
   
 // initialize data on new frame/cycle
 void AutoScale::cycleStart() {
-  m_minmax.minX = cFrac::WindowXsize*cTran::AccurMltp; // end of window 
-  m_minmax.minY = cFrac::WindowYsize*cTran::AccurMltp; // end of window 
+  m_minmax.minX = cFrac::WindowXsize; // end of window 
+  m_minmax.minY = cFrac::WindowYsize; // end of window 
   m_minmax.maxX = 0;
   m_minmax.maxY = 0;
 }
@@ -40,22 +40,17 @@ void AutoScale::findMinMax(const Vec2D & vec) {
 void AutoScale::cycleResume(Element & prim) {
   constexpr static float cShrinkStep { 0.992f };
 
-  VecMinMax real_minmax {};
-
-  // reduce sizes to real window size
-  real_minmax = getRealScale();
-
   // Collecting picture contour sizes for whole program duration
-  Dbg::find_minmax(real_minmax);
+  Dbg::find_minmax(m_minmax);
 
   if(m_optionOn) {
   
-    if(rescaleRequired(real_minmax) and !m_rescaleActive) {
+    if(rescaleRequired(m_minmax) and !m_rescaleActive) {
       // Rescale Activation
       Dbg::report_info("Rescale Activation ", m_rescaleActive );
       m_rescaleActive = true;
 
-    } else if(rescaleFinished(real_minmax) and m_rescaleActive) {
+    } else if(rescaleFinished(m_minmax) and m_rescaleActive) {
       // Rescale Deactivation
       Dbg::report_info("Rescale Deactivation ", m_rescaleActive );
       m_rescaleActive = false;
@@ -80,19 +75,6 @@ void AutoScale::cycleResume(Element & prim) {
   }
 }
 
-
-// Real window size scale
-VecMinMax AutoScale::getRealScale(void) {
-  VecMinMax real_minmax {};
-
-  // reduce sizes to real window size
-  real_minmax.maxX = m_minmax.maxX / cTran::AccurMltp;
-  real_minmax.maxY = m_minmax.maxY / cTran::AccurMltp;
-  real_minmax.minX = m_minmax.minX / cTran::AccurMltp;
-  real_minmax.minY = m_minmax.minY / cTran::AccurMltp;
-
-  return real_minmax;
-}
 
 // Calculate delta vector to center picure (in window) in multiple small steps
 // uses accuracy units
