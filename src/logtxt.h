@@ -23,9 +23,9 @@
 struct LogText {
   explicit LogText(OptParams opts) 
     : file_opened { false } 
-    , cHelpDrawFrames {35}
-    , cPrintSpeedFrames {20}
-    , cSavedDrawFrames {20}
+    , cHelpDrawFrames {80}
+    , cPrintSpeedFrames {40}
+    , cSavedDrawFrames {40}
     , snapshot_file_str { opts.optSnapshot }    
     , loaded_snapshot_info_str {}
     , help_draw_cnt { 0 }
