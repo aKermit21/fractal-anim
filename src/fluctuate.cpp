@@ -10,7 +10,6 @@
 #include "fluctuate.h"
 #include "animation.h"
 #include "fractal.h"
-#include "transform.h"
 #include <SFML/Window/Keyboard.hpp>
 #include <cstdlib>
 #include <iostream>
@@ -102,7 +101,8 @@ void MovFluctuate::oneStepWindChange() {
   // Wind (shaky)
   // 0th (primary element) is always fixed
   for (size_t level {1}; level <= cFrac::NrOfOrders; ++level) {
-    int step = cTran::accurAngleMltp / 3;
+    // enable random play
+    int step = 6;
     // higher level bigger trembling
     step *= level+1;
     for (size_t elem {0}; elem < cFrac::NrOfElements; ++elem) {
@@ -111,27 +111,27 @@ void MovFluctuate::oneStepWindChange() {
                      - algo_data[elem].angle_down;
 
       // Assymetric random changes for too big deviations
-      if (delta > cTran::accurAngleMltp * cTolerance) {
-        windVelocity[level][elem].up += (rand() % step) - step;
-      } else if (delta < - cTran::accurAngleMltp * cTolerance) {
-        windVelocity[level][elem].up += (rand() % step) + step;
+      if (delta > cTolerance) {
+        windVelocity[level][elem].up += ((rand() % step) - step) * cFactor;
+      } else if (delta < - cTolerance) {
+        windVelocity[level][elem].up += ((rand() % step) + step) * cFactor;
       } else {
-        windVelocity[level][elem].up += (rand() % (2*step)) - step;
+        windVelocity[level][elem].up += ((rand() % (2*step)) - step) * cFactor;
       }
       // down
-      if (delta_down > cTran::accurAngleMltp * cTolerance) {
-        windVelocity[level][elem].down += (rand() % step) - step;
-      } else if (delta_down < - cTran::accurAngleMltp * cTolerance) {
-        windVelocity[level][elem].down += (rand() % step) + step;
+      if (delta_down > cTolerance) {
+        windVelocity[level][elem].down += ((rand() % step) - step) * cFactor;
+      } else if (delta_down < - cTolerance) {
+        windVelocity[level][elem].down += ((rand() % step) + step) * cFactor;
       } else {
-        windVelocity[level][elem].down += (rand() % (2*step)) - step;
+        windVelocity[level][elem].down += ((rand() % (2*step)) - step) * cFactor;
       }
 
+      // TODO: Add Wind friction
+
       // Condider wind velocity has diffrent resolution than angle
-      algo_data_fluctuate[level][elem].angle +=
-        static_cast<int>(windVelocity[level][elem].up *cVelResol);
-      algo_data_fluctuate[level][elem].angle_down +=
-        static_cast<int>(windVelocity[level][elem].down *cVelResol);
+      algo_data_fluctuate[level][elem].angle += windVelocity[level][elem].up;
+      algo_data_fluctuate[level][elem].angle_down += windVelocity[level][elem].down;
       
     }
   }

@@ -66,8 +66,10 @@ struct MovFluctuate : MovAnim {
 
 private:
 
-  // Assumed deviations in points for wind algo
-  constexpr static int cTolerance { 10 };
+  // Assumed deviations in radians for wind algo
+  constexpr static float cTolerance { 0.05 };
+  // Step to radian velocity factor
+  constexpr static float cFactor { 0.0001 };
 
   // General enable state (not necessary in given time)
   bool GrowingEnabled;
@@ -78,11 +80,8 @@ private:
   // Wind (shaky)
   void oneStepWindChange();
 
-  // Consider wind velocity has resolution of 0.01 deg while angle(_down) - 0.1
-  constexpr static float cVelResol { 0.1 };
-  
   // temporary angular Velocity (x0.01 deg)
-  using T_UpDown = struct {int up; int down;};
+  using T_UpDown = struct {float up; float down;};
   std::array<std::array<T_UpDown, cFrac::NrOfElements>, cFrac::NrOfOrders+1>
       windVelocity;
 

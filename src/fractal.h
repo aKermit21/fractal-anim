@@ -70,8 +70,8 @@ struct Vec2D {
   // affects x,y - shall be done before rotation
   void reposition(const float fraction);
   // rotate and scale - affects dx,dy
-  // angle in 0.1deg scale
-  void rotate(const int angle, const float scale);
+  // angle in radians
+  void rotate(const float angle, const float scale);
 
   // had angle between light rays and (this) vec changed (<90 vs >90 deg)
   bool light_vec_angle_flip();
@@ -130,8 +130,8 @@ struct FluctuateState {
 // live transformation version used for calculations
 struct DRec {
   float repos;  // move (reposition) in fraction of original stem
-  int angle;  // of a rotation for up branch
-  int angle_down;  // of a rotation for down branch (if symmetrical then just -angle)
+  float angle;  // of a rotation for up branch in radians
+  float angle_down;  // of a rotation for down branch (if symmetrical then just -angle)
   float scale; 
 };
 

@@ -4,6 +4,7 @@ project('fractal-anim', 'cpp',
                      'buildtype=release', 'b_ndebug=if-release'])
 
 my_src = [
+ 'src/aux_func.cpp',
  'src/aggreg.cpp',
  'src/animation.cpp',
  'src/autoscale.cpp',

@@ -10,13 +10,8 @@
 #include "dbg_report.h"
 #include "fractal.h"
 #include "transform.h"
-#include <algorithm>
-#include <array>
 #include <cmath>
-#include <iterator>
 #include <assert.h>
-
-constexpr static int cPromile { 1000 };
 
 // rotation matrix calculations
 template<typename T>
@@ -111,56 +106,14 @@ void Stem::repositionStemAbsolute(const float dx, const float dy) {
   y2 += dy;
 }
 
-void Vec2D::rotate(const int angle, const float scale = 1.0) {
-  // sin, cos lookup table
-  struct Pre_sin_cos {
-    int theta; // accurAngleMltp parts of degrees
-    float sinus;
-    float cosin;
-  };
+void Vec2D::rotate(const float angle, const float scale = 1.0) {
+  if (angle != 0.0) {
+      // Primary sin/cos math calculations in radians
 
-  // sin, cos Lookup Table
-  // Table possible size: 1 (practically no use) .. 10 (optimal) .. 100 (less than optimal)
-  // Usually NrOfElements*2 angles are used per signle frame
-  constexpr static int PRECALC_MAX { 10 }; 
-  static std::array<Pre_sin_cos, PRECALC_MAX> angle_tab {}; // intialize all to zero
-
-  if (angle != 0) {
-
-    // First check value in Look-Up tanble;
-    // try to find already stored angle (memoization algo)
-    auto result = std::find_if(
-        begin(angle_tab), end(angle_tab),
-        [&angle](const Pre_sin_cos &tab) { return angle == tab.theta; });
-    if (result != end(angle_tab)) {
-      // reuse precalculated sinus and cosinus
-      // dbg.report_trace( "precalc (x1000) sinus: ", 1000*result->sinus );
-      rotation_matrix(result->sinus, result->cosin);
-    } else {
-      Dbg::report_trace("New (unused) angle: ", angle);
-      // Utilize row in table, according to index, to store calculated new values
-
-      // (simple) Rotate to the right table elements in order to make room
-      // for a new value which will be placed at the very beginning (0-index);
-      // this is to shorten search for recently used angle
-      std::rotate(angle_tab.rbegin(), angle_tab.rbegin() + 1, angle_tab.rend());
-
-      // Primary sin/cos math calculations needed
-      // Converting 0.1 degress (or other granularity) to radians
-      float angle_rad = angle * 3.14159 / (180 * cTran::accurAngleMltp);
-
-      // Place calculated value at the very beginning (0-index)
-      angle_tab[0].theta = angle;
-      angle_tab[0].sinus = sin(angle_rad);
-      angle_tab[0].cosin = cos(angle_rad);
-      Dbg::report_trace("New calculation for angle: ", angle);
-      // dbg::report_trace("  (x1000) sin:", 1000*result->sinus); // x1000 =
-      // float to int scale dbg::report_trace("  (x1000) cos:",
-      // 1000*result->cosin);
-      rotation_matrix(angle_tab[0].sinus, angle_tab[0].cosin);
-    }
+      float temp_sinus = sin(angle);
+      float temp_cosin = cos(angle);
+      rotation_matrix(temp_sinus, temp_cosin);
   }
-
   if (scale != 1.0) {
     dx = dx * scale;
     dy = dy * scale;

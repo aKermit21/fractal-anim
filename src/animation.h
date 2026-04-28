@@ -29,7 +29,7 @@ struct MovAnim : TranAlg {
   enum StopType { freezeTimeStop, justStop, endOfStopList};
 
   // Steps per Closing/Opening - angle animation
-  constexpr static int NR_OF_STEPS_ANIM { 150 };
+  constexpr static int NR_OF_STEPS_ANIM { 200 };
    
   // Single Step for resizing (Enlarging/Diminishing)
   constexpr static float ENLARGE_SIZE_STEP { 0.002f };  // absolute
@@ -89,8 +89,8 @@ struct MovAnim : TranAlg {
   
   // single step animation delta
   std::array<float, cFrac::NrOfElements> angle_anim_delta;
-    // Current angles (float) - animation needs track accurate angles
-  std::array<float, cFrac::NrOfElements> angles_tf;
+  //   // Current angles (float) - animation needs track accurate angles
+  // std::array<float, cFrac::NrOfElements> angles_tf;
   
   // Angles animation
   void one_step_closing();

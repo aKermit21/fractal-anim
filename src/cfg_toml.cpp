@@ -9,6 +9,7 @@
 
 #include "cfg_toml.h"
 // #include "toml++/impl/forward_declarations.hpp"
+#include "aux_func.h"
 #include "colors.h"
 #include "dbg_report.h"
 #include "fractal.h"
@@ -113,7 +114,8 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
     if (!tmpint) return false;
 
     // See log_trans_config() and conv_to_assym() transformation
-    tmp_tran_algo[i].angle = *tmpint * cTran::accurAngleMltp / 10L; 
+    tmp_tran_algo[i].angle =
+      myAux::zeroOneDegreesToRadians(static_cast<float>(*tmpint));
     tmp_tran_algo[i].angle_down = -tmp_tran_algo[i].angle;
   
     // Scale reading

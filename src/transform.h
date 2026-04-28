@@ -17,13 +17,6 @@
 // used to tranform parent to child
 // and setup primary element and
 namespace cTran {
-  // Angle degree values mulitplications used in tranformations for better accuracy
-  // as result degree resolution is 1/accurAngleMltp.
-  // Discrete (int) representation is needed to utilize lookup table
-  // See - Vec2D::rotate()
-  inline constexpr float accurAngleMltp { 32 };
-  inline constexpr float accurAngleMltp_f { static_cast<float>(accurAngleMltp) };
-
   // Window size centre in accuracy units
   inline constexpr float cXcenterM = cFrac::WindowXsize / 2.0;
   inline constexpr float cYcenterM = cFrac::WindowYsize / 2.0;

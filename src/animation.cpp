@@ -11,6 +11,7 @@
 #include "fractal.h"
 #include "transform.h"
 #include "demo_func.h"
+#include "aux_func.h"
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
@@ -99,8 +100,6 @@ void MovAnim::resumeTimeFlow() {
 
 void MovAnim::make_angle_delta_table() {
   for (size_t ind {0}; ind < cFrac::NrOfElements; ++ind) {
-    // Make tracking copy of angles
-    angles_tf[ind] = static_cast<float>(algo_data[ind].angle);
     // Calculate single step of angle animation
     angle_anim_delta[ind] = static_cast<float>(algo_data_init[ind].angle)/NR_OF_STEPS_ANIM;
   }  
@@ -127,15 +126,13 @@ void MovAnim::one_step_cfg_change(){
 
 void MovAnim::one_step_closing() {
   for (size_t ind {0}; ind < cFrac::NrOfElements; ++ind) {
-    angles_tf[ind] -= angle_anim_delta[ind];
-    if (angles_tf[ind] <= 0.0f) { // Stop at zero
+    algo_data[ind].angle -= angle_anim_delta[ind];
+    if (algo_data[ind].angle <= 0.0f) { // Stop at zero
       stopAnimation();
       stopAtZero = true;
-      angles_tf[ind] = 0.0f;
       algo_data[ind].angle = 0;
     } else {
       stopAtZero = false;
-      algo_data[ind].angle = static_cast<int>(angles_tf[ind]);
       // symmetrical animation
       algo_data[ind].angle_down = -algo_data[ind].angle;  
     }
@@ -144,13 +141,11 @@ void MovAnim::one_step_closing() {
 
 void MovAnim::one_step_opening() {
   for (size_t ind {0}; ind < cFrac::NrOfElements; ++ind) {
-    angles_tf[ind] += angle_anim_delta[ind];
-    if (angles_tf[ind] >= 160.0f * cTran::accurAngleMltp_f) { // Stop at wide angle
+    algo_data[ind].angle += angle_anim_delta[ind];
+    if (algo_data[ind].angle >= myAux::degreesToRadians(160.0f) ) { // Stop at wide angle
       stopAnimation();
-      angles_tf[ind] = 160.0f * cTran::accurAngleMltp_f;
-      algo_data[ind].angle = 160 * cTran::accurAngleMltp;
+      algo_data[ind].angle = myAux::degreesToRadians(160.0f);
     } else {
-      algo_data[ind].angle = static_cast<int>(angles_tf[ind]);
       // symmetrical animation
       algo_data[ind].angle_down = -algo_data[ind].angle;  
     }
