@@ -111,25 +111,27 @@ void MovFluctuate::oneStepWindChange() {
                      - algo_data[elem].angle_down;
 
       // Assymetric random changes for too big deviations
-      if (delta > cTolerance) {
-        windVelocity[level][elem].up += ((rand() % step) - step) * cFactor;
-      } else if (delta < - cTolerance) {
-        windVelocity[level][elem].up += ((rand() % step) + step) * cFactor;
+      if (delta > cWindTolerance) {
+        windVelocity[level][elem].up += ((rand() % step) - step) * cWindFactor;
+      } else if (delta < - cWindTolerance) {
+        windVelocity[level][elem].up += ((rand() % step) + step) * cWindFactor;
       } else {
-        windVelocity[level][elem].up += ((rand() % (2*step)) - step) * cFactor;
+        windVelocity[level][elem].up += ((rand() % (2*step)) - step) * cWindFactor;
       }
       // down
-      if (delta_down > cTolerance) {
-        windVelocity[level][elem].down += ((rand() % step) - step) * cFactor;
-      } else if (delta_down < - cTolerance) {
-        windVelocity[level][elem].down += ((rand() % step) + step) * cFactor;
+      if (delta_down > cWindTolerance) {
+        windVelocity[level][elem].down += ((rand() % step) - step) * cWindFactor;
+      } else if (delta_down < - cWindTolerance) {
+        windVelocity[level][elem].down += ((rand() % step) + step) * cWindFactor;
       } else {
-        windVelocity[level][elem].down += ((rand() % (2*step)) - step) * cFactor;
+        windVelocity[level][elem].down += ((rand() % (2*step)) - step) * cWindFactor;
       }
 
-      // TODO: Add Wind friction
+      // Simulate constant friction
+      windVelocity[level][elem].down *= cWindFriction;
+      windVelocity[level][elem].up *= cWindFriction;
 
-      // Condider wind velocity has diffrent resolution than angle
+      // Add velocity to an angle
       algo_data_fluctuate[level][elem].angle += windVelocity[level][elem].up;
       algo_data_fluctuate[level][elem].angle_down += windVelocity[level][elem].down;
       

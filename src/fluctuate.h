@@ -67,9 +67,11 @@ struct MovFluctuate : MovAnim {
 private:
 
   // Assumed deviations in radians for wind algo
-  constexpr static float cTolerance { 0.05 };
+  constexpr static float cWindTolerance { 0.05 };
   // Step to radian velocity factor
-  constexpr static float cFactor { 0.0001 };
+  constexpr static float cWindFactor { 0.0001 };
+  // Friction simulation factor
+  constexpr static float cWindFriction { 0.995 };
 
   // General enable state (not necessary in given time)
   bool GrowingEnabled;

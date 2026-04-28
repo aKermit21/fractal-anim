@@ -200,20 +200,15 @@ T_Algo_Arr TranAlg::get_prop_cfg_arr(float scale_max, float scale_min){
   // Needed for linear change
   float angle_step_f = (angle_max_f - angle_min_f) / (cFrac::NrOfElements -1);
   float scale_step = (scale_max - scale_min) / (cFrac::NrOfElements -1);
-  float t_angle;
-  float t_scale;
 
   float sum_repo = scale_max; // first lenght (scale) is counted twice
   // Linear change from Max to Min value
   for (size_t ind {0}; ind < cFrac::NrOfElements; ++ind) {
-    t_angle = angle_max_f - angle_step_f * ind;
-    t_scale = scale_max - scale_step * ind;
-    // TODO: Simplify
-    arr[ind].angle = t_angle;
+    arr[ind].angle = angle_max_f - angle_step_f * ind;
+    arr[ind].scale = scale_max - scale_step * ind;
     // symmetrical angles
     arr[ind].angle_down = -arr[ind].angle;
-    arr[ind].scale = t_scale;
-    sum_repo += t_scale; // will be needed for proportional calculations
+    sum_repo += arr[ind].scale; // will be needed for proportional calculations
   }
 
   // Branch reposition proportional to its high (scale)

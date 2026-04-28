@@ -52,16 +52,15 @@ LightS::RetResult LightS::key_decodation(sf::Keyboard::Key key){
     rotate_rgb_color_updown(rotateDownColor);
     retResult.colorChanged = true;
   } 
-  else  if (key == sf::Keyboard::Key::Q) {
-    move_light_position_by(-25);   // move fast to left
-    //TODO: Switch off temporary light
-    retResult.lightMoved = true;
-  }
-  else if (key == sf::Keyboard::Key::E) {
-    move_light_position_by(25);   // move fast to right
-    //TODO: Switch off temporary light
-    retResult.lightMoved = true;
-  }
+  // Optional light jump options
+  // else  if (key == sf::Keyboard::Key::Q) {
+  //   move_light_position_by(-25);   // move fast to left
+  //   retResult.lightMoved = true;
+  // }
+  // else if (key == sf::Keyboard::Key::E) {
+  //   move_light_position_by(25);   // move fast to right
+  //   retResult.lightMoved = true;
+  // }
   else if ((key == sf::Keyboard::Key::A) or (key == sf::Keyboard::Key::D) or
            ((key == sf::Keyboard::Key::Left) or (key == sf::Keyboard::Key::Right))) {
     // Light smooth moving realized by light_draw()
