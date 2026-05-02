@@ -20,7 +20,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
-bool recurance_elements_redraw(Element * const prim_ptr, const short level, 
+bool recurance_elements_redraw(Element * const prim_ptr, const long level, 
                 sf::RenderWindow & win, const MovFluctuate & algo_anim, AutoScale & autoScale);
 
 

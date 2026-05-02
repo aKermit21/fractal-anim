@@ -24,15 +24,20 @@ struct StemColor {
   sf::Color end_c;
 };
 
-// Colors for 0-NrOfrders stems
+// Colors for 0-NrOfrders+1 stems
 // 0th order is primary element, following are counted:
 //  1..NrOfOrders; thus '+1'
-using T_Col_Palet = std::array<StemColor, cFrac::NrOfOrders +1>;
+// If NrOfOrders+1 > NrOfColorsPaletes the later set is reuse in circular maner
+// see getCircularColors();
+using T_Col_Palet = std::array<StemColor, cFrac::NrOfColorPaletes>;
 
 struct ColorPal {
 
   // Diff algos for random palletes generation
   enum RandPalettes { palSpcRnd1, palJustRnd };
+
+  // Ordinary color set vs Flash color set (modifed colors flashed by light beam)
+  enum ColorType { normalColors, flashColors };
 
   // maximum range (Uint8) of Color component used in sf::Color
   constexpr static int cRGB_ColorMax {255};
@@ -64,6 +69,9 @@ struct ColorPal {
   static bool s_global_flash;
   static bool s_reset_flash_algo;
   
+  // Helper function to obtain colors for any level event level exceeds Color Sets
+  static StemColor getCircularColors(ColorType type, long int level);
+
 // called once in a display loop
 // to switch off possible global control flags
 // after signle frame (cycle)

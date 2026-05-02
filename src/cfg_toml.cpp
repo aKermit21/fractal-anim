@@ -140,7 +140,7 @@ bool CfgToml::loadNextConfigInternal(std::string filePath, std::string & info,
   // For this part it is acceptable partial faulty config read 
   StemColor prev_colors {};
   
-  for (size_t i=0; i < cFrac::NrOfOrders+1; ++i) {
+  for (size_t i=0; i < cFrac::NrOfColorPaletes; ++i) {
     bool typeFault = false;
     
     // Begin stem color

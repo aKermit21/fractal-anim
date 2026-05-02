@@ -19,7 +19,7 @@
 
 // Allocate subordinate elements/branches
 // and initialize with structural data
-bool new_elements_creation(Element * const parent_ptr, const short level)
+bool new_elements_creation(Element * const parent_ptr, const long level)
 {
   static unsigned long recur_funct_cnt { 0 };
 
@@ -44,7 +44,7 @@ bool new_elements_creation(Element * const parent_ptr, const short level)
   auto u_ptr_down_temp { std::make_unique<std::array<Element, cFrac::NrOfElements>>() };
   parent_ptr->children_down = u_ptr_down_temp.get(); // ordinary ptr to a structure
   // Move Unique Ptr ownership to dedicated (garbage) Collection
-  MemAndDebug::collect_u_ptr(std::move(u_ptr_down_temp));
+  MemAndDebug::collectElementPtr(std::move(u_ptr_down_temp));
   Dbg::count_elements(cFrac::NrOfElements);
   short ind;
   ind = 0;
@@ -60,7 +60,7 @@ bool new_elements_creation(Element * const parent_ptr, const short level)
   auto&& ptr_up_temp = std::make_unique<std::array<Element, cFrac::NrOfElements>>();
   parent_ptr->children_up = ptr_up_temp.get();  // ordinary ptr to a structure
   // Move Unique Ptr ownership to dedicated (garbage) Collection
-  MemAndDebug::collect_u_ptr(std::move(ptr_up_temp));
+  MemAndDebug::collectElementPtr(std::move(ptr_up_temp));
   Dbg::count_elements(cFrac::NrOfElements);
   ind = 0;
   for(auto it = parent_ptr->children_up->begin(); it != parent_ptr->children_up->end(); ++it ) {
@@ -76,48 +76,47 @@ bool new_elements_creation(Element * const parent_ptr, const short level)
 }
 
 
-bool recurance_elements_redraw(Element * const parent_ptr, const short level, 
+bool recurance_elements_redraw(Element * const parent_ptr, const long level, 
            sf::RenderWindow &win, const MovFluctuate &algo_anim,
            AutoScale & autoscale)
 {
   static long recur_funct_cnt { 0 };
 
-  // Only for testing/debugging
-  if (Dbg::cReportWarning) {
-    // needed calculation of time between frames
-    static auto prev_time = std::chrono::high_resolution_clock::now();
-    
-    if (level == 0) {
-      // Possible actions per every cycle
+  // needed calculation of time between frames
+  static auto prev_time = std::chrono::high_resolution_clock::now();
+  
+  if (level == 0) {
+    // Possible actions per every cycle
 
-      // Smart report - Show # elemnts drawn per cycle if value is >10% change from previous
-      Dbg::report_info_by_type(Dbg::infoTypeElementsDrawnPerCycle, recur_funct_cnt); //report o
-      recur_funct_cnt = 0; // reset recurrance counter so it will count per cycle
+    // Smart report - Show # elemnts drawn per cycle if value is >10% change from previous
+    Dbg::report_info_by_type(Dbg::infoTypeElementsDrawnPerCycle, recur_funct_cnt); //report o
+    recur_funct_cnt = 0; // reset recurrance counter so it will count per cycle
 
-      // time between frames
-      auto next_time = std::chrono::high_resolution_clock::now();
-      double elapsed_time_ms = 
-        std::chrono::duration<double, std::milli>(next_time - prev_time).count();
-      // Smart report - time perf frame in ms if value is >10% change from previous
-      Dbg::report_info_by_type(Dbg::infoTypeTimePerFrame, elapsed_time_ms);
+    // time between frames
+    auto next_time = std::chrono::high_resolution_clock::now();
+    double elapsed_time_ms = 
+      std::chrono::duration<double, std::milli>(next_time - prev_time).count();
+    // Smart report - time perf frame in ms if value is >10% change from previous
+    Dbg::report_info_by_type(Dbg::infoTypeTimePerFrame, elapsed_time_ms);
 
-      // Ensure minimal time between consecutive frame drawing
-      long correctionTime { 0 };
-      if (elapsed_time_ms < cFrac::MinTimePerFrame) {
-        correctionTime = cFrac::MinTimePerFrame - elapsed_time_ms;
-        std::this_thread::sleep_for(std::chrono::milliseconds(correctionTime));
-      }
-      // Omit obove delay for inter frame time calculation
-      prev_time = std::chrono::high_resolution_clock::now();
-    
-    } else { ++recur_funct_cnt; }
-
-    // Warn if too much elemnts drawed per cycle
-    if (recur_funct_cnt >= Dbg::cDrawWarningThreshold) {
-      Dbg::report_mltpl_warning(Dbg::mltplElementsDraw, recur_funct_cnt);
-      // return false; // with active return object drawing is aborted
+    // Ensure minimal time between consecutive frame drawing
+    long correctionTime { 0 };
+    if (elapsed_time_ms < cFrac::MinTimePerFrame) {
+      correctionTime = cFrac::MinTimePerFrame - elapsed_time_ms;
+      std::this_thread::sleep_for(std::chrono::milliseconds(correctionTime));
     }
+    // Omit obove delay for inter frame time calculation
+    prev_time = std::chrono::high_resolution_clock::now();
+  
+  } else {
+    // action on non-first call
+    ++recur_funct_cnt;
+  }
 
+  // Warn if too much elemnts drawed per cycle
+  if (recur_funct_cnt >= Dbg::cDrawWarningThreshold) {
+    Dbg::report_mltpl_warning(Dbg::mltplElementsDraw, recur_funct_cnt);
+    // return false; // with active return object drawing is aborted
   }
 
   // Tranform this vector (base on settings copied from parent) to the new one 
@@ -133,8 +132,8 @@ bool recurance_elements_redraw(Element * const parent_ptr, const short level,
   }
 
   // Take approx vector length : |dx| + |dy| ~ sqrt(dx2 + dy2)
-  auto approx_vec =  abs(parent_ptr->stem_xy.vec_xy.dx) + 
-                     abs(parent_ptr->stem_xy.vec_xy.dy); 
+  auto approx_vec =  std::abs(parent_ptr->stem_xy.vec_xy.dx) + 
+                     std::abs(parent_ptr->stem_xy.vec_xy.dy); 
   
   // Consider element size limits on going to deeper branch
   // If size below threshold do not continue with children

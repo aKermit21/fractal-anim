@@ -15,10 +15,10 @@
 #include "fractal.h"
 
 // Garbage collector static variables
-unsigned long MemAndDebug::ptrs_cnt; 
+unsigned long MemAndDebug::elementPtrsCnt; 
 // Collection of pointers ownership
 std::vector<std::unique_ptr<std::array<Element, cFrac::NrOfElements>>> 
-    MemAndDebug::all_ptrs;
+    MemAndDebug::allElementPtrs;
 
 // Static Counters
 int Dbg::error_cnt {0}; 
@@ -177,16 +177,6 @@ void Dbg::find_minmax(const VecMinMax vec) {
   if (minmax.maxX < vec.maxX) { minmax.maxX = vec.maxX;}
   if (minmax.minY > vec.minY) { minmax.minY = vec.minY;}
   if (minmax.maxY < vec.maxY) { minmax.maxY = vec.maxY;}
-}
-
-
-// Timing, Counting elements - per frame
-void before_recurrence() {
-  
-}
-
-void after_recurrence() {
-  
 }
 
 

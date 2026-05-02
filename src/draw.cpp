@@ -20,7 +20,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
 
-void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeTime) {
+void StemFlash::draw_stem(sf::RenderWindow &win, long order, const bool freezeTime) {
 
   // effect lasting # of frames
   constexpr static unsigned int FLASH_GLOBAL_CNT_MAX { 5 };
@@ -66,9 +66,12 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
         triangle[2].position = sf::Vector2f(x2,y2);
 
         // Flash colors
-        triangle[0].color = ColorPal::s_flash_col_palet[order].begin_c;
-        triangle[2].color = ColorPal::s_flash_col_palet[order].begin_c;
-        triangle[1].color = ColorPal::s_flash_col_palet[order].end_c;
+        triangle[0].color = ColorPal::
+          getCircularColors(ColorPal::flashColors, order).begin_c;
+        triangle[2].color = ColorPal::
+          getCircularColors(ColorPal::flashColors, order).begin_c;
+        triangle[1].color = ColorPal::
+          getCircularColors(ColorPal::flashColors, order).end_c;
         
         win.draw(triangle);
       } else {
@@ -81,10 +84,14 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
         two_lines[2].position = sf::Vector2f(x2,y2);
         two_lines[3].position = sf::Vector2f(fvdx, fvdy);
         // Regular colors
-        two_lines[0].color = ColorPal::s_col_palet[order].begin_c;
-        two_lines[2].color = ColorPal::s_col_palet[order].begin_c;
-        two_lines[1].color = ColorPal::s_col_palet[order].end_c;
-        two_lines[3].color = ColorPal::s_col_palet[order].end_c;
+        two_lines[0].color = ColorPal::
+          getCircularColors(ColorPal::normalColors, order).begin_c;
+        two_lines[2].color = ColorPal::
+          getCircularColors(ColorPal::normalColors, order).begin_c;
+        two_lines[1].color = ColorPal::
+          getCircularColors(ColorPal::normalColors, order).end_c;
+        two_lines[3].color = ColorPal::
+          getCircularColors(ColorPal::normalColors, order).end_c;
 
         win.draw(two_lines);
       }
@@ -109,12 +116,18 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
       tri_line[5].position = sf::Vector2f(fvdx, fvdy +1);
 
       // Flash colors
-      tri_line[0].color = ColorPal::s_flash_col_palet[order].begin_c;
-      tri_line[1].color = ColorPal::s_flash_col_palet[order].end_c;
-      tri_line[2].color = ColorPal::s_flash_col_palet[order].begin_c;
-      tri_line[3].color = ColorPal::s_flash_col_palet[order].end_c;
-      tri_line[4].color = ColorPal::s_flash_col_palet[order].begin_c;
-      tri_line[5].color = ColorPal::s_flash_col_palet[order].end_c;
+      tri_line[0].color = ColorPal::
+          getCircularColors(ColorPal::flashColors, order).begin_c;
+      tri_line[1].color = ColorPal::
+          getCircularColors(ColorPal::flashColors, order).end_c;
+      tri_line[2].color = ColorPal::
+          getCircularColors(ColorPal::flashColors, order).begin_c;
+      tri_line[3].color = ColorPal::
+          getCircularColors(ColorPal::flashColors, order).end_c;
+      tri_line[4].color = ColorPal::
+          getCircularColors(ColorPal::flashColors, order).begin_c;
+      tri_line[5].color = ColorPal::
+          getCircularColors(ColorPal::flashColors, order).end_c;
 
       win.draw(tri_line);
     } else {
@@ -124,8 +137,10 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
       one_line[0].position = sf::Vector2f(fvx,fvy);
       one_line[1].position = sf::Vector2f(fvdx, fvdy);
       // Regular colors
-      one_line[0].color = ColorPal::s_col_palet[order].begin_c;
-      one_line[1].color = ColorPal::s_col_palet[order].end_c;
+      one_line[0].color = ColorPal::
+          getCircularColors(ColorPal::normalColors, order).begin_c;
+      one_line[1].color = ColorPal::
+          getCircularColors(ColorPal::normalColors, order).end_c;
 
       win.draw(one_line);
     }
@@ -135,7 +150,7 @@ void StemFlash::draw_stem(sf::RenderWindow &win, short order, const bool freezeT
 
 // Old draw - without light flash
 [[deprecated("use StemFlash::draw_step instead")]] 
-void Stem::draw_stem(sf::RenderWindow &win, short order,
+void Stem::draw_stem(sf::RenderWindow &win, long order,
                      [[maybe_unused]]const bool freezeTime) {
   
   assert(order >= 0);

@@ -82,7 +82,7 @@ private:
   // Wind (shaky)
   void oneStepWindChange();
 
-  // temporary angular Velocity (x0.01 deg)
+  // temporary angular Velocity 
   using T_UpDown = struct {float up; float down;};
   std::array<std::array<T_UpDown, cFrac::NrOfElements>, cFrac::NrOfOrders+1>
       windVelocity;

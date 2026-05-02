@@ -23,10 +23,10 @@ namespace cFrac {
   inline constexpr int NrOfElements { 5 }; // number of elements in one child branch  
   // if > 5, consider extending definition of "Transformation Data" in transform.h
 
+  inline constexpr int NrOfColorPaletes { 8 }; 
   // maximal possible nesting, down generations, counting from 0 (primary) to 8
   // minimum 7 because of fixed colors definitions in colors.h
   inline constexpr int NrOfOrders { 8 }; 
-  // can be problematic to increase
 
   // Graphic visible window  
   inline constexpr int WindowXsize { 1100 }; 
@@ -102,7 +102,7 @@ struct Stem{
   // Calculate coordinates of stem with some possible adjustmement (due to autoscale)
   void recalculateStemWidthCoordinates(float cumulativeFactor);
 
-  virtual void draw_stem(sf::RenderWindow &win, short level, const bool freezeTime);
+  virtual void draw_stem(sf::RenderWindow &win, long level, const bool freezeTime);
   // // to be used by Flash Light version
   // virtual bool light_vec_angle_flip() = 0;
 };
@@ -110,7 +110,7 @@ struct Stem{
 // Stem with additional Flash Light handling
 // values remain from previous frame unless explicitelly changed
 struct StemFlash : Stem {
-  virtual void draw_stem(sf::RenderWindow & win, short level, const bool freezeTime);
+  virtual void draw_stem(sf::RenderWindow & win, long level, const bool freezeTime);
   // light angle from previous frame / cycle
   LightAngleCase prev_l_angle;
   // active light flash of stem for # of frames  
@@ -155,7 +155,7 @@ using T_Fluctuate_Algo_Arr = std::array<T_Algo_Arr, cFrac::NrOfOrders +1>;
 /* Single Element of Fractal */
 struct Element {
   short order { 0 }; // nesting level
-  short index {};     // position within current branch - 1..cTran::NrOfElements
+  long int index {};     // level, position within current branch - 1..cTran::NrOfElements
   // std::optional<DRec> exceptionalRule {std::nullopt};
   BranchType b_type = firstBranch; // First branch valid only for first element
   // vetor / delta coordinates / stem thickness / Flash Light
@@ -165,7 +165,7 @@ struct Element {
   std::array<Element, cFrac::NrOfElements> * children_down {};
   std::array<Element, cFrac::NrOfElements> * children_up {};
   // Link to parent (single one)
-  Element *parent_ptr = {}; // pointer to previous already existing object
+  Element *parent_ptr {}; // pointer to previous already existing object
   // Tranform vec/stem from parent using special transformation array
   // - method for static (single frame) drawing
   void transform_vec_stem(const T_Fluctuate_Algo_Arr & algo_fluct_data);

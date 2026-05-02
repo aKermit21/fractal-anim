@@ -18,7 +18,7 @@
 struct MemAndDebug : Dbg
 {
   MemAndDebug(){
-    ptrs_cnt = 0;
+    elementPtrsCnt = 0;
   }
   // explicit destructor always virtual: learncpp 25.4
   virtual ~MemAndDebug(){
@@ -29,19 +29,19 @@ struct MemAndDebug : Dbg
 
   
   // Add ownership pointer to the collection
-  static void collect_u_ptr(std::unique_ptr<std::array<Element, cFrac::NrOfElements>> ptr) {
-    all_ptrs.push_back(std::move(ptr));
-    ++ptrs_cnt;
+  static void collectElementPtr(std::unique_ptr<std::array<Element, cFrac::NrOfElements>> ptr) {
+    allElementPtrs.push_back(std::move(ptr));
+    ++elementPtrsCnt;
 
     if (Dbg::cReportWarning) {
-      if (ptrs_cnt >= Dbg::cCreatePointersThreshold) {
-        Dbg::report_mltpl_warning( Dbg::mltplPointers, ptrs_cnt);
+      if (elementPtrsCnt >= Dbg::cCreatePointersThreshold) {
+        Dbg::report_mltpl_warning( Dbg::mltplPointers, elementPtrsCnt);
       }
     }
 
     // Check some very Big Number
-    if (Dbg::cReportError and ptrs_cnt > 50'000'000) {
-      Dbg::report_error("Too large # of u ptrs collected: ", ptrs_cnt);
+    if (Dbg::cReportError and elementPtrsCnt > 50'000'000) {
+      Dbg::report_error("Too large # of u ptrs collected: ", elementPtrsCnt);
       // Fatal Error
       release_all();
       throw "Too large number of elements created.";
@@ -51,17 +51,17 @@ struct MemAndDebug : Dbg
     // Explicit release all allocated data from the collection
   static void release_all(){
     // Release all (manually) in reverse order
-    for (auto rit { MemAndDebug::all_ptrs.rbegin() }; rit != MemAndDebug::all_ptrs.rend(); ++rit)  {
+    for (auto rit { MemAndDebug::allElementPtrs.rbegin() }; rit != MemAndDebug::allElementPtrs.rend(); ++rit)  {
       rit->reset();  // release allocated data
     }
-    all_ptrs.clear();  // clear vector itself
+    allElementPtrs.clear();  // clear vector itself
     std::cerr << "Garbage collector manually clean-up\n";
   }
 
   private:
-  static unsigned long ptrs_cnt; 
-  // Collection of pointers ownership
-  static std::vector<std::unique_ptr<std::array<Element, cFrac::NrOfElements>>> all_ptrs;
+  static unsigned long elementPtrsCnt; 
+  // Collection of Element pointers ownership
+  static std::vector<std::unique_ptr<std::array<Element, cFrac::NrOfElements>>> allElementPtrs;
 };
 
 // extern GarbColl gc;

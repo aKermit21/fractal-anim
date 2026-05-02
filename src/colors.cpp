@@ -17,7 +17,6 @@
 #include <array>
 #include <cstddef>
 #include <cstdlib>
-#include <chrono>
 #include <sstream>
 #include <cassert>
 
@@ -30,11 +29,29 @@ T_Col_Palet ColorPal::s_flash_col_palet;
 bool ColorPal::s_global_flash {false};
 bool ColorPal::s_reset_flash_algo {false};
   
+
+// Helper function to obtain colors for any level event level exceeds Color Sets
+StemColor ColorPal::getCircularColors(ColorType type, long int level) {
+  // White as deafault to easy trace errors
+  StemColor colors { sf::Color(200, 200, 200, 255), sf::Color(200, 200, 200, 255) };
+  long int levelCircular = level % cFrac::NrOfColorPaletes;
+  if (type == normalColors) {
+    colors = s_col_palet[levelCircular];
+  } else if (type == flashColors) {
+    colors = s_flash_col_palet[levelCircular];
+  } else {
+    // Unexected
+    assert("Unexpected branch" and false);
+  }
+  return colors;
+}
+
+  
 // Recalculate complete random colors
 T_Col_Palet ColorPal::just_random_colors() {
   T_Col_Palet cpal;
 
-  for (size_t i {0}; i <= cFrac::NrOfOrders; ++i) {
+  for (size_t i {0}; i < cFrac::NrOfColorPaletes; ++i) {
     // All components just random
     cpal[i] = {sf::Color(rand() % cRGB_ColorMax, rand() % cRGB_ColorMax,
                          rand() % cRGB_ColorMax),
@@ -76,9 +93,8 @@ T_Col_Palet ColorPal::special_random_colors_v1() {
   // start from Red component
   unsigned int rgb_mask {cRedCompMask};
   std::array<std::array<unsigned int, 3>, 2> rand_two_colors;
-  sf::Color rgb_color_begin, rgb_color_end;
 
-  for (size_t br_i {0}; br_i <= cFrac::NrOfOrders; ++br_i) {           // branches
+  for (size_t br_i {0}; br_i < cFrac::NrOfColorPaletes; ++br_i) {     // levels
     for (size_t be_i {cColorBegin}; be_i <= cColorEnd; ++be_i) { // begin/end
       rgb_mask = cRedCompMask;
       for (size_t com_i {0}; com_i < 3; ++com_i) { // color component
@@ -170,7 +186,7 @@ void ColorPal::calc_updown_color_pallet(bool up){
     change_ratio = 0.80;
   }
 
-  for (size_t order {0}; order <= cFrac::NrOfOrders; ++order) { 
+  for (size_t order {0}; order < cFrac::NrOfColorPaletes; ++order) { 
     temp = static_cast<unsigned int>(s_col_palet[order].begin_c.b * change_ratio);
     if (temp > 255) {temp=255;}
     s_col_palet[order].begin_c.b = static_cast<std::uint8_t>(temp);
@@ -210,7 +226,7 @@ void ColorPal::calc_flash_color_pallet(sf::Color act_light_color) {
   unsigned int color_start_begin, color_begin;
   unsigned int color_start_end, color_end;
 
-  for (size_t order {0}; order <= cFrac::NrOfOrders; ++order) { 
+  for (size_t order {0}; order < cFrac::NrOfColorPaletes; ++order) { 
 
     // Initialize flash colors acoording to current pallete
     s_flash_col_palet[order].begin_c = s_col_palet[order].begin_c;

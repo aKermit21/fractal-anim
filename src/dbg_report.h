@@ -85,10 +85,6 @@ struct Dbg
   static void find_minmax(const VecMinMax minmaxVec);
   static void report_summary(void) noexcept;
 
-  // Timing, Counting elements - per frame
-  void before_recurrence();
-  void after_recurrence();
-  
   private:
 
   // Exit after # of errors
