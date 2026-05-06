@@ -12,6 +12,7 @@
 #include "demo_func.h"
 #include "cstdlib"
 #include <SFML/Config.hpp>
+#include <cassert>
 #include <cmath>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
@@ -216,8 +217,11 @@ void LightS::create_ray_line(sf::Vector2f current_line_pos, bool s_fill,
     even_el = true;
   }
   
+  [[maybe_unused]] int assertCnt = 0;
   // Add grid sections till vertical end
   do {
+    ++assertCnt;  // discover infinite loop
+    assert((assertCnt < 1000) and "Too much line elements. ");
     current_line_pos += lvecf; // move line along the lightvector
     line_element.position = sf::Vector2f(current_line_pos); // position of light is beginning of line
     line_element.color = dim_color(s_lightColor, 60);
@@ -251,9 +255,11 @@ sf::VertexArray LightS::create_rays_grid(sf::Vector2f lpos) {
 
   line_pos.y = CIRCLE_R*2 + MAIN_SPOT_R;
 
+  [[maybe_unused]] int assertCnt = 0;
   // Lines/rays to the left
   start_fill = false;
   do {
+    assertCnt++;
     line_pos.x -= 59;
     // lines start at irregular postion
 
@@ -265,8 +271,10 @@ sf::VertexArray LightS::create_rays_grid(sf::Vector2f lpos) {
     } else {
       start_fill = true;
     }
-    
-  } while (line_pos.x > 0); // till left side of window
+    assert((assertCnt < 1000) and
+         "Too much grid lines. Possible Infinite loop.");
+    // till left side of window with margin
+  } while (line_pos.x > -X_MID);
   
   // Lines/rays to the right
   line_pos = lpos;
@@ -283,8 +291,10 @@ sf::VertexArray LightS::create_rays_grid(sf::Vector2f lpos) {
     } else {
       start_fill = true;
     }
-    
-  } while (line_pos.x < X_MID *2); // till right side of window
+    assert((assertCnt < 1000) and
+           "Too much grid lines. Possible Infinite loop.");
+    // till right side of window with margin
+  } while (line_pos.x < X_MID *3);
 
   return auxg;
 }
